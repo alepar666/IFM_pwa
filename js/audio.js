@@ -61,7 +61,7 @@ window.addEventListener('DOMContentLoaded', () => {
     document.addEventListener("visibilitychange", () => {
         if (document.hidden) {
             // slow down polling when lockscreen
-            pollingInterval = sleepyPollingInterval;
+            pollingInterval = slowPollingDelay;
             isPageVisible = false;
         } else {
             // resume polling
