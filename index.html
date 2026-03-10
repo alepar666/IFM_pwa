@@ -86,13 +86,7 @@
     <!-- Scripts -->
     <script type="module" src="js/constants.js"></script>
     <script type="module" src="js/audio.js"></script>
-    <script type="module">
-        const cacheBuster = Date.now();
-        const script = document.createElement('script');
-        script.type = 'module';
-        script.src = `js/index.js?v=${cacheBuster}`;
-        document.body.appendChild(script);
-    </script>
+    <script type="module" src="js/index.js"></script>
 
 </body>
 
