@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ifm-cache-' + Date.now();
+const CACHE_NAME = 'ifm-cache-1.0.0';
 
 const ASSETS_TO_CACHE = [
   '/',
