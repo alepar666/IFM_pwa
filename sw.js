@@ -1,31 +1,29 @@
-// increment at each new deploy
-const CACHE_NAME = 'ifm-cache-v2';
+// increment at every new deploy
+const CACHE_NAME = 'ifm-cache-v3';
 
 // Asset da cacheare
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/css/index.css',
-  '/js/constants.js',
-  '/js/index.js',
-  '/js/audio.js',
-  '/img/favicon.ico',
-  '/img/icon.png',
-  '/img/cbs.png',
-  '/img/df.png',
-  '/img/tdm.png'
+    '/',
+    '/index.html',
+    '/css/index.css',
+    '/js/constants.js',
+    '/js/index.js',
+    '/js/audio.js',
+    '/img/favicon.ico',
+    '/img/icon.png',
+    '/img/cbs.png',
+    '/img/df.png',
+    '/img/tdm.png'
 ];
 
-// Install: cache assets and aactivates rigth away SW
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
         .then(cache => cache.addAll(ASSETS_TO_CACHE))
-        .then(() => self.skipWaiting()) // force new SW
+        .then(() => self.skipWaiting())
     );
 });
 
-// Activate delete old cache and get control of the client
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(keys =>
@@ -33,20 +31,32 @@ self.addEventListener('activate', event => {
                 keys.filter(key => key !== CACHE_NAME)
                 .map(key => caches.delete(key))
             )
-        ).then(() => self.clients.claim()) // check all pages
+        ).then(() => self.clients.claim())
     );
 });
 
-// Fetch → gestione intelligente delle risorse
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    // bypass cache for index.html and index.js always fetch from server
-    if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/js/index.js' || url.pathname === '/version.json') {
+    if (url.pathname === '/version.json') {
+        event.respondWith(
+            fetch(event.request)
+            .catch(() => new Response(JSON.stringify({
+                app_version: 'unknown'
+            }), {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }))
+        );
+        return;
+    }
+
+    if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/js/index.js') {
         event.respondWith(
             fetch(event.request)
             .then(resp => {
-                // update cache with last version
+                // aggiorna cache con la nuova versione
                 const respClone = resp.clone();
                 caches.open(CACHE_NAME).then(cache => cache.put(event.request, respClone));
                 return resp;
@@ -56,7 +66,6 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // for all other resources, cache first
     event.respondWith(
         caches.match(event.request)
         .then(resp => resp || fetch(event.request))
