@@ -101,8 +101,8 @@ export async function playChannel(channelNumber) {
         getNowPlaying();
     } catch (error) {
         console.error("Error playing channel:", error);
-        reset();
-        displayMessage(`Error while loading ${station.title}: ${error}`);
+        let errorMessage = "No audio stream received from mothership."
+        displayMessage(`Error while loading ${station.title}: ${errorMessage}`);
     } finally {
         enableChannelButtons();
     }
