@@ -1,5 +1,5 @@
 // Constants for PWA version of Intergalactic FM
-export const APP_VERSION = "1.0.0"; // update me for every new release!
+export const APP_VERSION = "1.0.0-beta"; // update me for every new release!
 export const APP_BUILD = Date.now();
 export const PLAYER_HTML_ID = 'player';
 export const STATIONS_JSON_URL = 'https://intergalactic.fm/sd/stations.json';
