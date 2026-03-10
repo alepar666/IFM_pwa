@@ -1,5 +1,5 @@
 // increment at every new deploy
-const CACHE_NAME = 'ifm-cache-v7';
+const CACHE_NAME = 'ifm-cache-v0.1';
 
 // Asset da cacheare
 const ASSETS_TO_CACHE = [
