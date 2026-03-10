@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ifm-cache-1.0.0' + Date.now;
+const CACHE_NAME = '1'; // increase me for cache update forcing
 
 const ASSETS_TO_CACHE = [
   '/',
