@@ -77,10 +77,10 @@ export async function fetchStations() {
     }
 }
 
-// rolling text
+// scrolling text
 export function updateScrollingText(customText) {
     const baseText = customText || constants.DEFAULT_SCROLLING_TEXT;
-    const fullText = baseText + " - v" + constants.APP_VERSION;
+    const fullText = `${baseText} - v${constants.APP_VERSION} (build ${constants.APP_BUILD})`;
     setScrollingText(fullText);
 }
 
