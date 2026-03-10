@@ -84,9 +84,9 @@
     <audio hidden id="player" src="" type="audio/mpeg" preload="auto" playsinline></audio>
 
     <!-- Scripts -->
-    <script type="module" src="js/constants.js"></script>
-    <script type="module" src="js/audio.js"></script>
-    <script type="module" src="js/index.js"></script>
+    <script type="module" src="js/constants.js?v=${APP_BUILD}"></script>
+    <script type="module" src="js/audio.js?v=${APP_BUILD}"></script>
+    <script type="module" src="js/index.js?v=${APP_BUILD}"></script>
 
     <!-- anticipate DNS lookup and TLS handshake with stream server -->
     <link rel="preconnect" href="https://intergalactic.fm">
