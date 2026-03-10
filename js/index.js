@@ -80,7 +80,7 @@ export async function fetchStations() {
 // rolling text
 export function updateScrollingText(customText) {
     const baseText = customText || constants.DEFAULT_SCROLLING_TEXT;
-    const fullText = appVersion ? `${baseText} - ${appVersion}` : baseText;
+    const fullText = baseText + " - v" + constants.APP_VERSION;
     setScrollingText(fullText);
 }
 
