@@ -3,6 +3,16 @@ import * as constants from './constants.js';
 export let fetchedStations = [];
 export let audioContext;
 
+// cache management for new version
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('SW registered', reg))
+            .catch(err => console.warn('SW registration failed', err));
+    });
+}
+
+
 // quando il DOM è pronto
 window.addEventListener('DOMContentLoaded', () => {
 

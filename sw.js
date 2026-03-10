@@ -1,20 +1,30 @@
-import {
-    APP_VERSION,
-    CACHE_NAME,
-    ASSETS_TO_CACHE
-} from './js/constants.js';
+const CACHE_NAME = 'ifm-cache-' + Date.now();
 
-self.addEventListener('install', (event) => {
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/css/index.css',
+  '/js/constants.js',
+  '/js/index.js',
+  '/js/audio.js',
+  '/img/favicon.ico',
+  '/img/icon.png',
+  '/img/cbs.png',
+  '/img/df.png',
+  '/img/tdm.png'
+];
+
+self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
-        .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+        .then(cache => cache.addAll(ASSETS_TO_CACHE))
         .then(() => self.skipWaiting())
     );
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener('activate', event => {
     event.waitUntil(
-        caches.keys().then((keys) =>
+        caches.keys().then(keys =>
             Promise.all(
                 keys
                 .filter(key => key !== CACHE_NAME)
@@ -24,8 +34,9 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-self.addEventListener('fetch', (event) => {
+self.addEventListener('fetch', event => {
     event.respondWith(
-        caches.match(event.request).then((cached) => cached || fetch(event.request))
+        caches.match(event.request)
+        .then(resp => resp || fetch(event.request))
     );
 });
