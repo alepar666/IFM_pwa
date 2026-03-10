@@ -1,18 +1,4 @@
 // Constants for PWA version of Intergalactic FM
-export const APP_VERSION = "1.0.0-betatest"; // update me for every new release, and align with manifest.json!
-export const ASSETS_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/css/index.css',
-    '/js/constants.js',
-    '/js/index.js',
-    '/js/audio.js',
-    '/img/favicon.ico',
-    '/img/icon.png',
-    '/img/cbs.png',
-    '/img/df.png',
-    '/img/tdm.png',
-];
 export const PLAYER_HTML_ID = 'player';
 export const STATIONS_JSON_URL = 'https://intergalactic.fm/sd/stations.json';
 export const DISPLAY_MESSAGE_BOX_ID = 'messageBox';

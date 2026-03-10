@@ -42,7 +42,7 @@ self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
     // bypass cache for index.html and index.js always fetch from server
-    if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/js/index.js') {
+    if (url.pathname === '/' || url.pathname === '/index.html' || url.pathname === '/js/index.js' || url.pathname === '/version.json') {
         event.respondWith(
             fetch(event.request)
             .then(resp => {

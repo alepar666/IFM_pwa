@@ -2,6 +2,7 @@ import * as constants from './constants.js';
 
 export let fetchedStations = [];
 export let audioContext;
+let currentAppVersion = 'unknown';
 
 const channelButtons = [
     document.getElementById(constants.CBS_BUTTON_ID),
@@ -39,6 +40,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     }, 50);
 
+    fetchAppVersion();
     updateScrollingText();
     refreshScrollingTextAnimation();
 
@@ -96,9 +98,24 @@ export async function fetchStations() {
     }
 }
 
+// fetch version.json
+export async function fetchAppVersion() {
+    try {
+        const response = await fetch('/version.json', {
+            cache: 'no-store'
+        });
+        if (!response.ok) throw new Error('Failed to fetch version.json');
+        const data = await response.json();
+        currentAppVersion = data.app_version || 'unknown';
+    } catch (err) {
+        console.warn('Could not fetch app version:', err);
+    }
+    updateScrollingText(); // aggiorna subito lo scrolling
+}
+
 export function updateScrollingText(customText) {
     const baseText = customText || constants.DEFAULT_SCROLLING_TEXT;
-    const fullText = `${baseText} - v${constants.APP_VERSION}`;
+    const fullText = `${baseText} - v${currentAppVersion}`;
     setScrollingText(fullText);
 }
 
