@@ -78,7 +78,8 @@ window.addEventListener('DOMContentLoaded', () => {
 export function stop() {
     if (AUDIO_PLAYER) {
         AUDIO_PLAYER.pause();
-        AUDIO_PLAYER.src = '';
+        AUDIO_PLAYER.removeAttribute("src");
+        AUDIO_PLAYER.load();
     }
 }
 
@@ -96,6 +97,7 @@ function enableChannelButtons() {
 
 // play channel stream
 export async function playChannel(channelNumber) {
+    stop();
     disableChannelButtons();
 
     const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
