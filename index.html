@@ -6,7 +6,7 @@
     <title>Intergalactic FM</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <link rel="stylesheet" href="css/index.css">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="img/favicon.ico">
@@ -81,18 +81,18 @@
     </div>
 
     <!-- HTML5 audio player (hidden) -->
-    <audio hidden id="player" src="" type="audio/mpeg" preload="auto" playsinline></audio>
+    <audio hidden id="player" src="" type="audio/mpeg" preload="none" playsinline></audio>
 
     <!-- Scripts -->
-    <script type="module" src="js/constants.js?v=${APP_BUILD}"></script>
-    <script type="module" src="js/audio.js?v=${APP_BUILD}"></script>
-    <script type="module" src="js/index.js?v=${APP_BUILD}"></script>
-
-    <!-- anticipate DNS lookup and TLS handshake with stream server -->
-    <link rel="preconnect" href="https://intergalactic.fm">
-    <link rel="dns-prefetch" href="https://intergalactic.fm">
-    <link rel="preconnect" href="https://radio.intergalactic.fm/">
-    <link rel="dns-prefetch" href="https://radio.intergalactic.fm/">
+    <script type="module" src="js/constants.js"></script>
+    <script type="module" src="js/audio.js"></script>
+    <script type="module">
+        const cacheBuster = Date.now();
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = `js/index.js?v=${cacheBuster}`;
+        document.body.appendChild(script);
+    </script>
 
 </body>
 
