@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Intergalactic FM</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
+
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Apple PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Intergalactic FM">
+    <link rel="apple-touch-icon" href="img/icon.png">
+</head>
+
+<body>
+    <div class="header">
+        <!-- Stop button -->
+        <button id="stopButton" class="close">↵</button>
+        <!-- Header -->
+        <img id="headerImage" src="img/icon100.png" alt="IFM logo">
+    </div>
+
+    <!-- Scrolling text -->
+    <div class="scrollTextContainer">
+        <div class="ifmxScrollText"></div>
+    </div>
+
+    <div id="container" class="container">
+        <!-- Channel list -->
+        <div class="channels">
+            <button id="cbsChannelButton" class="channel">
+                <div class="channelRow">
+                    <img class="channelIcon" src="img/cbs.png" />
+                    <div class="channelName">CYBERNETIC BROADCASTING SYSTEM</div>
+                </div>
+            </button>
+            <p></p>
+            <button id="dfChannelButton" class="channel">
+                <div class="channelRow">
+                    <img class="channelIcon" src="img/df.png" />
+                    <div class="channelName">DISCO FETISH</div>
+                </div>
+            </button>
+            <p></p>
+            <button id="tdmChannelButton" class="channel">
+                <div class="channelRow">
+                    <img class="channelIcon" src="img/tdm.png" />
+                    <div class="channelName">THE DREAM MACHINE</div>
+                </div>
+            </button>
+        </div>
+
+        <!-- Message box -->
+        <div id="messageBox"></div>
+
+        <!-- Links -->
+        <div class="links">
+            <button id="websiteRedirect" class="channel">@ WEBSITE</button>
+            <button id="donateRedirect" class="channel">$ DONATE</button>
+            <button id="archiveRedirect" class="channel">[-] ARCHIVE</button>
+        </div>
+    </div>
+
+    <!-- Now Playing modal -->
+    <div id="trackInfoModal" class="modal">
+        <div id="nowPlaying"></div>
+        <div id="nowPlayingExt"></div>
+        <div id="nowPlayingCover"></div>
+    </div>
+
+    <!-- HTML5 audio player (hidden) -->
+    <audio hidden id="player" src="" type="audio/mpeg" preload="auto" playsinline></audio>
+
+    <!-- Scripts -->
+    <script type="module" src="js/constants.js"></script>
+    <script type="module" src="js/audio.js"></script>
+    <script type="module" src="js/index.js"></script>
+
+</body>
+
+</html>
