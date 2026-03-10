@@ -16,19 +16,24 @@ if ('serviceWorker' in navigator) {
 // quando il DOM è pronto
 window.addEventListener('DOMContentLoaded', () => {
 
-    if (!fetchedStations) {
-        fetchStations();
-    }
-
     updateScrollingText();
     refreshScrollingTextAnimation();
+
+    if (fetchedStations.length === 0) {
+        fetchStations();
+    }
 
     // unlock iOS audio context
     if (!audioContext) {
         audioContext = new(window.AudioContext || window.webkitAudioContext)();
+        const buffer = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
     }
 
-    // previeni pinch-zoom su iOS
+    // prevent pinch-zoom on iOS
     document.addEventListener('gesturestart', e => e.preventDefault());
     document.addEventListener('gesturechange', e => e.preventDefault());
     document.addEventListener('gestureend', e => e.preventDefault());
@@ -53,7 +58,9 @@ window.addEventListener('DOMContentLoaded', () => {
 // fetch stazioni dal server IFM
 export async function fetchStations() {
     try {
-        const response = await fetch(constants.STATIONS_JSON_URL);
+        const response = await fetch(constants.STATIONS_JSON_URL, {
+            cache: "no-store"
+        });
         if (!response.ok) {
             displayMessage(`Unable to load the playlist: ${response.status} - ${response.statusText}`);
             return;
