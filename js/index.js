@@ -80,7 +80,7 @@ export async function fetchStations() {
 // scrolling text
 export function updateScrollingText(customText) {
     const baseText = customText || constants.DEFAULT_SCROLLING_TEXT;
-    const fullText = `${baseText} - v${constants.APP_VERSION} (build ${constants.APP_BUILD})`;
+    const fullText = `${baseText} - v${constants.APP_VERSION}`;
     setScrollingText(fullText);
 }
 
