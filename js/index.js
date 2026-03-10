@@ -101,7 +101,7 @@ export async function fetchStations() {
 // fetch version.json
 export async function fetchAppVersion() {
     try {
-        const response = await fetch('/version.json', {
+        const response = await fetch('version.json', {
             cache: 'no-store'
         });
         if (!response.ok) throw new Error('Failed to fetch version.json');
