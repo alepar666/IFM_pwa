@@ -71,8 +71,18 @@ function enableChannelButtons() {
 export async function playChannel(channelNumber) {
     disableChannelButtons();
 
+    const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
+    const homeContainer = document.getElementById(constants.CONTAINER_ID);
+    const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
+
+    if (homeContainer) hideElement(homeContainer);
+    if (modal) showElement(modal);
+    if (stopButton) showElement(stopButton);
+
     if (!fetchedStations || fetchedStations.length === 0) {
-        await fetchStations();
+        fetchStations().catch(err => {
+            console.error("Fetch stations failed:", err);
+        });
     }
 
     const station = fetchedStations[channelNumber];
@@ -86,29 +96,33 @@ export async function playChannel(channelNumber) {
         selectedChannel = channelNumber;
         AUDIO_PLAYER.src = station.src;
         AUDIO_PLAYER.load();
-        await audioContext.resume();
-        await AUDIO_PLAYER.play();
+
+        AUDIO_PLAYER.play().catch(err => {
+            console.warn("Audio play failed:", err);
+        });
 
         setLockscreenTrackCommands();
         addAudioEventListeners(AUDIO_PLAYER);
 
+        // reset now playing hash
         clearTimeout(nowPlayingRequestTimer);
         previousTrackHash = constants.EMPTY_VAL;
 
         displayMessage(constants.LOADING_MSG + station.title + "...");
-        currentNowPlayingUrl = constants.NOW_PLAYING_REQUEST_PREFIX + station.title;
 
+        // fetch NowPlaying in background
+        currentNowPlayingUrl = constants.NOW_PLAYING_REQUEST_PREFIX + station.title;
         getNowPlaying();
+
     } catch (error) {
         console.error("Error playing channel:", error);
-        let errorMessage = "No audio stream received from mothership."
-        displayMessage(`Error while loading ${station.title}: ${errorMessage}`);
+        displayMessage(`Error while loading ${station.title}: No audio stream received.`);
     } finally {
         enableChannelButtons();
     }
 }
 
-// event listener per MediaSession su browser/iOS
+// event listener for MediaSession
 function addAudioEventListeners(audioPlayer) {
     if (constants.MEDIASESSION_NAME in navigator) {
         audioPlayer.addEventListener(constants.PLAY_ACTION_NAME, () => {

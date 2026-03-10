@@ -1,5 +1,5 @@
 // Constants for PWA version of Intergalactic FM
-export const APP_VERSION = "1.0.0-beta_testing"; // update me for every new release!
+export const APP_VERSION = "1.0.0-beta_test"; // update me for every new release!
 export const APP_BUILD = Date.now();
 export const CACHE_NAME = `ifm-cache-v${APP_VERSION}`;
 export const ASSETS_TO_CACHE = [
