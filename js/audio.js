@@ -17,6 +17,13 @@ let selectedChannel;
 let previousTrackHash = constants.EMPTY_VAL;
 let AUDIO_PLAYER;
 
+let fastPollingInterval = 5000;
+let pollingInterval = fastPollingInterval;
+let slowPollingInterval = 10000;
+let slowPollingDelay = 20000;
+let pollingSwitchTimer;
+let isPageVisible = true;
+
 const channelButtons = [
     document.getElementById(constants.CBS_BUTTON_ID),
     document.getElementById(constants.DF_BUTTON_ID),
@@ -50,6 +57,21 @@ window.addEventListener('DOMContentLoaded', () => {
             btn.style.MozUserSelect = 'none';
         });
     }
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            // slow down polling when lockscreen
+            pollingInterval = sleepyPollingInterval;
+            isPageVisible = false;
+        } else {
+            // resume polling
+            if (!isPageVisible && currentNowPlayingUrl) {
+                isPageVisible = true;
+                getNowPlaying();
+            }
+
+        }
+    });
 });
 
 // stop audio player
@@ -117,6 +139,15 @@ export async function playChannel(channelNumber) {
 
         // fetch NowPlaying in background
         currentNowPlayingUrl = constants.NOW_PLAYING_REQUEST_PREFIX + station.title;
+
+        // adaptive polling: start fast
+        pollingInterval = fastPollingInterval;
+
+        // after 30s switch to slow polling
+        clearTimeout(pollingSwitchTimer);
+        pollingSwitchTimer = setTimeout(() => {
+            pollingInterval = slowPollingInterval;
+        }, slowPollingDelay);
         getNowPlaying();
 
     } catch (error) {
@@ -169,7 +200,7 @@ async function getNowPlaying() {
         feedNowPlaying(trackMetadata);
     }
 
-    nowPlayingRequestTimer = setTimeout(getNowPlaying, constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC);
+    nowPlayingRequestTimer = setTimeout(getNowPlaying, pollingInterval);
 }
 
 function fixEncoding(str) {
@@ -274,6 +305,7 @@ export function reset() {
     feedHTML(constants.NOW_PLAYING_DIV_EXT_ID, constants.EMPTY_VAL);
     feedHTML(constants.NOW_PLAYING_COVER_DIV_ID, constants.EMPTY_VAL);
     clearTimeout(nowPlayingRequestTimer);
+    clearTimeout(pollingSwitchTimer);
     previousTrackHash = constants.EMPTY_VAL;
     selectedChannel = constants.EMPTY_VAL;
     document.title = constants.PAGE_TITLE_DEFAULT;
