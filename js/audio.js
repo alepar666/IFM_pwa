@@ -36,6 +36,11 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     AUDIO_PLAYER = document.getElementById('player');
+    // prewarm audio player
+    if (AUDIO_PLAYER) {
+        AUDIO_PLAYER.src = ''; // src vuoto per inizializzare
+        AUDIO_PLAYER.load();
+    }
 
     if (isTouchDevice()) {
         channelButtons.forEach(btn => {
