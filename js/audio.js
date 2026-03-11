@@ -20,9 +20,11 @@ let AUDIO_PLAYER;
 let fastPollingInterval = 5000;
 let pollingInterval = fastPollingInterval;
 let slowPollingInterval = 10000;
+let errorPollingInterval = 30000;
 let slowPollingDelay = 20000;
 let pollingSwitchTimer;
 let isPageVisible = true;
+let nowPlayingFetching = false;
 
 const channelButtons = [
     document.getElementById(constants.CBS_BUTTON_ID),
@@ -80,6 +82,7 @@ export function stop() {
         AUDIO_PLAYER.pause();
         AUDIO_PLAYER.removeAttribute("src");
         AUDIO_PLAYER.load();
+        addAudioEventListeners(AUDIO_PLAYER);
     }
 }
 
@@ -131,7 +134,6 @@ export async function playChannel(channelNumber) {
         });
 
         setLockscreenTrackCommands();
-        addAudioEventListeners(AUDIO_PLAYER);
 
         // reset now playing hash
         clearTimeout(nowPlayingRequestTimer);
@@ -174,9 +176,12 @@ function addAudioEventListeners(audioPlayer) {
 
 // fetch now playing
 async function getNowPlaying() {
+    if (nowPlayingFetching) return;
+    nowPlayingFetching = true;
+
     let trackMetadata;
     try {
-        const response = await fetch(currentNowPlayingUrl);
+        const response = await fetchWithTimeout(currentNowPlayingUrl);
         if (!response.ok) {
             trackMetadata = setDefaultNowPlayingInfo();
         } else {
@@ -193,6 +198,9 @@ async function getNowPlaying() {
     } catch (error) {
         console.warn("NowPlaying API error:", error);
         trackMetadata = setDefaultNowPlayingInfo();
+        pollingInterval = errorPollingInterval;
+    } finally {
+        nowPlayingFetching = false;
     }
 
     const metaDataHash = trackMetadata.title + trackMetadata.image_file;
@@ -202,7 +210,21 @@ async function getNowPlaying() {
         feedNowPlaying(trackMetadata);
     }
 
-    nowPlayingRequestTimer = setTimeout(getNowPlaying, pollingInterval);
+    if (!currentNowPlayingUrl) return;
+    if (currentNowPlayingUrl) {
+        nowPlayingRequestTimer = setTimeout(getNowPlaying, pollingInterval);
+    }
+}
+
+async function fetchWithTimeout(url, timeout = 4000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
+
+    const response = await fetch(url, {
+        signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
 }
 
 function fixEncoding(str) {
@@ -308,6 +330,7 @@ export function reset() {
     feedHTML(constants.NOW_PLAYING_COVER_DIV_ID, constants.EMPTY_VAL);
     clearTimeout(nowPlayingRequestTimer);
     clearTimeout(pollingSwitchTimer);
+    currentNowPlayingUrl = null;
     previousTrackHash = constants.EMPTY_VAL;
     selectedChannel = constants.EMPTY_VAL;
     document.title = constants.PAGE_TITLE_DEFAULT;

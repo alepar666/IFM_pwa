@@ -1,6 +1,6 @@
 {
     "name": "Intergalactic FM Web App",
-    "version": "0.0.3-test",
+    "version": "0.0.4-test",
     "short_name": "IFM",
     "start_url": "./index.html",
     "display": "standalone",
