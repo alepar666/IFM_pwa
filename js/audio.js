@@ -97,7 +97,7 @@ window.addEventListener('DOMContentLoaded', function () {
 export function stop() {
     if (AUDIO_PLAYER) {
         AUDIO_PLAYER.pause();
-        AUDIO_PLAYER.removeAttribute("src");
+        addAudioEventListeners(AUDIO_PLAYER);
     }
 }
 
@@ -150,7 +150,8 @@ export async function playChannel(channelNumber) {
 
     try {
         selectedChannel = channelNumber;
-        AUDIO_PLAYER.src = station.src + "?t=" + Date.now(); // prevent caching
+        AUDIO_PLAYER.src = station.src;
+        AUDIO_PLAYER.load();
 
         AUDIO_PLAYER.play().catch(function (err) {
             console.warn("Audio play failed:", err);
