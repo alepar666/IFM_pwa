@@ -123,7 +123,7 @@ export async function playChannel(channelNumber) {
 
     try {
         selectedChannel = channelNumber;
-        AUDIO_PLAYER.src = station.src;
+        AUDIO_PLAYER.src = station.src + "?t=" + Date.now();;
         AUDIO_PLAYER.load();
 
         AUDIO_PLAYER.play().catch(err => {
