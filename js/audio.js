@@ -26,7 +26,7 @@ let AUDIO_PLAYER;
 let fastPollingInterval = 5000; // 5 seconds
 let pollingInterval = fastPollingInterval;
 let slowPollingInterval = 10000; // 10 seconds
-let errorPollingInterval = 30000; // 30 seconds if errors occur
+let reallySlowPollingInterval = 30000; // 30 seconds if errors occur
 let slowPollingDelay = 20000; // Delay before switching to slow polling
 let pollingSwitchTimer;
 // Flag indicating if the page is currently visible
@@ -82,7 +82,7 @@ window.addEventListener('DOMContentLoaded', function () {
     // Handle visibility change to throttle polling when the tab is hidden
     document.addEventListener("visibilitychange", function () {
         if (document.hidden) {
-            pollingInterval = slowPollingDelay;
+            pollingInterval = reallySlowPollingInterval;
             isPageVisible = false;
         } else {
             clearTimeout(nowPlayingRequestTimer);
@@ -98,7 +98,7 @@ window.addEventListener('DOMContentLoaded', function () {
 export function stop() {
     if (AUDIO_PLAYER) {
         AUDIO_PLAYER.pause();
-        AUDIO_PLAYER.removeAttribute("src");
+        AUDIO_PLAYER.src = '';
     }
 }
 
@@ -123,7 +123,7 @@ function enableChannelButtons() {
 
 // Play a specific channel by index
 export async function playChannel(channelNumber) {
-    stop();
+
     disableChannelButtons();
 
     // Show/hide relevant UI elements for now-playing info
@@ -223,7 +223,7 @@ async function getNowPlaying() {
     } catch (error) {
         console.warn("NowPlaying API error:", error);
         trackMetadata = setDefaultNowPlayingInfo();
-        pollingInterval = errorPollingInterval;
+        pollingInterval = reallySlowPollingInterval;
     } finally {
         nowPlayingFetching = false;
     }
