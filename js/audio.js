@@ -64,7 +64,7 @@ window.addEventListener('DOMContentLoaded', () => {
             pollingInterval = slowPollingDelay;
             isPageVisible = false;
         } else {
-            // resume polling
+            clearTimeout(nowPlayingRequestTimer);
             if (!isPageVisible && currentNowPlayingUrl) {
                 isPageVisible = true;
                 getNowPlaying();
