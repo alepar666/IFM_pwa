@@ -65,6 +65,7 @@ window.addEventListener('DOMContentLoaded', function () {
     if (AUDIO_PLAYER) {
         AUDIO_PLAYER.src = ''; // Start with empty source
         AUDIO_PLAYER.load();
+        addAudioEventListeners(AUDIO_PLAYER);
     }
 
     // Disable text selection on touch devices for channel buttons
@@ -97,7 +98,7 @@ window.addEventListener('DOMContentLoaded', function () {
 export function stop() {
     if (AUDIO_PLAYER) {
         AUDIO_PLAYER.pause();
-        addAudioEventListeners(AUDIO_PLAYER);
+        AUDIO_PLAYER.removeAttribute("src");
     }
 }
 
