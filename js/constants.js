@@ -31,7 +31,7 @@ export const NONE = 'none';
 export const BLOCK = 'block';
 export const SYSTEM_READY_MSG = 'System ready.<br> Select a channel to play.';
 export const EMPTY_VAL = '';
-export const NOW_PLAYING_REQUEST_TIMEOUT_MSEC = 8000;
+export const NOW_PLAYING_REQUEST_TIMEOUT_MSEC = 7000;
 export const NOW_PLAYING_REQUEST_PREFIX = 'https://www.intergalactic.fm/now-playing?channel=';
 export const ARTIST_TITLE_SPLIT_STRING = ' - ';
 export const METADATA_SPLIT_CHAR = '|';
