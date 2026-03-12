@@ -234,10 +234,10 @@ async function getNowPlaying() {
         setTrackMetadata(trackMetadata);
         previousTrackHash = metaDataHash;
         feedNowPlaying(trackMetadata);
+        pollingInterval = fastPollingInterval;
     }
 
     if (!currentNowPlayingUrl) return;
-    pollingInterval = fastPollingInterval
     nowPlayingRequestTimer = setTimeout(getNowPlaying, pollingInterval);
 }
 
