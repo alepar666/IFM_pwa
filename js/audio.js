@@ -7,7 +7,6 @@ import {
     fetchedStations,
     setScrollingText,
     fetchStations,
-    audioContext,
     updateScrollingText
 } from './index.js';
 
@@ -23,11 +22,12 @@ let previousTrackHash = constants.EMPTY_VAL;
 let AUDIO_PLAYER;
 
 // Polling intervals for adaptive now-playing requests
-let fastPollingInterval = 5000; // 5 seconds
-let pollingInterval = fastPollingInterval;
-let slowPollingInterval = 10000; // 10 seconds
-let reallySlowPollingInterval = 30000; // 30 seconds if errors occur
-let slowPollingDelay = 20000; // Delay before switching to slow polling
+// changing constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC will affect in cascade the following ones since they are multiples
+let fastPollingInterval = constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC;
+let pollingInterval = fastPollingInterval*2;
+let slowPollingInterval = fastPollingInterval*3;
+let reallySlowPollingInterval = fastPollingInterval*4;
+let slowPollingDelay = constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC*4; // Delay before switching to slower polling (usually the limit of a jingle)
 let pollingSwitchTimer;
 // Flag indicating if the page is currently visible
 let isPageVisible = true;
@@ -70,8 +70,8 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Disable text selection on touch devices for channel buttons
     if (isTouchDevice()) {
-        for (var i = 0; i < channelButtons.length; i++) {
-            var btn = channelButtons[i];
+        for (let i = 0; i < channelButtons.length; i++) {
+            const btn = channelButtons[i];
             btn.style.userSelect = 'none';
             btn.style.webkitUserSelect = 'none';
             btn.style.msUserSelect = 'none';
@@ -109,14 +109,14 @@ function isTouchDevice() {
 
 // Disable all channel buttons to prevent multiple clicks
 function disableChannelButtons() {
-    for (var i = 0; i < channelButtons.length; i++) {
+    for (let i = 0; i < channelButtons.length; i++) {
         channelButtons[i].disabled = true;
     }
 }
 
 // Enable all channel buttons
 function enableChannelButtons() {
-    for (var i = 0; i < channelButtons.length; i++) {
+    for (let i = 0; i < channelButtons.length; i++) {
         channelButtons[i].disabled = false;
     }
 }
@@ -127,9 +127,9 @@ export async function playChannel(channelNumber) {
     disableChannelButtons();
 
     // Show/hide relevant UI elements for now-playing info
-    var modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
-    var homeContainer = document.getElementById(constants.CONTAINER_ID);
-    var stopButton = document.getElementsByClassName(constants.CLOSE)[0];
+    const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
+    const homeContainer = document.getElementById(constants.CONTAINER_ID);
+    const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
 
     if (homeContainer) hideElement(homeContainer);
     if (modal) showElement(modal);
@@ -142,7 +142,7 @@ export async function playChannel(channelNumber) {
         });
     }
 
-    var station = fetchedStations[channelNumber];
+    const station = fetchedStations[channelNumber];
     if (!station || !station.src) {
         displayMessage('Station not available');
         enableChannelButtons();
@@ -204,9 +204,9 @@ async function getNowPlaying() {
     if (nowPlayingFetching) return;
     nowPlayingFetching = true;
 
-    var trackMetadata;
+    let trackMetadata;
     try {
-        var response = await fetchWithTimeout(currentNowPlayingUrl);
+        const response = await fetchWithTimeout(currentNowPlayingUrl);
         if (!response.ok) {
             trackMetadata = setDefaultNowPlayingInfo();
         } else {
@@ -229,7 +229,7 @@ async function getNowPlaying() {
     }
 
     // Update track metadata if it changed
-    var metaDataHash = trackMetadata.title + trackMetadata.image_file;
+    const metaDataHash = trackMetadata.title + trackMetadata.image_file;
     if (previousTrackHash !== metaDataHash) {
         setTrackMetadata(trackMetadata);
         previousTrackHash = metaDataHash;
@@ -244,12 +244,12 @@ async function getNowPlaying() {
 // Fetch wrapper with timeout using AbortController
 async function fetchWithTimeout(url, timeout) {
     timeout = timeout || 4000;
-    var controller = new AbortController();
-    var id = setTimeout(function () {
+    const controller = new AbortController();
+    const id = setTimeout(function () {
         controller.abort();
     }, timeout);
 
-    var response = await fetch(url, {
+    const response = await fetch(url, {
         signal: controller.signal
     });
     clearTimeout(id);
@@ -274,7 +274,7 @@ function setDefaultNowPlayingInfo() {
 }
 
 // Object storing the current track metadata
-var nowPlayingMetadatas = {
+const nowPlayingMetadatas = {
     artist: "",
     title: "",
     album: "",
@@ -288,13 +288,13 @@ var nowPlayingMetadatas = {
 function setTrackMetadata(trackMetadata) {
     if (!trackMetadata || typeof trackMetadata.title !== "string") return;
 
-    var trackMetadatas = trackMetadata.title.split(constants.METADATA_SPLIT_CHAR);
-    var artist = trackMetadatas[0] || '';
-    var title = '';
+    const trackMetadatas = trackMetadata.title.split(constants.METADATA_SPLIT_CHAR);
+    let artist = trackMetadatas[0] || '';
+    let title = '';
 
-    var splitString = constants.ARTIST_TITLE_SPLIT_STRING || ' - ';
+    const splitString = constants.ARTIST_TITLE_SPLIT_STRING || ' - ';
     if (artist && artist.indexOf(splitString) >= 0) {
-        var parts = artist.split(splitString);
+        const parts = artist.split(splitString);
         artist = parts[0].trim();
         title = parts[1].trim();
     }
@@ -310,7 +310,7 @@ function setTrackMetadata(trackMetadata) {
     // Update scrolling text if available
     setScrollingText(trackMetadatas[5] || constants.DEFAULT_SCROLLING_TEXT || '');
 
-    var coverPath = (constants.COVER_PATH_ARRAY && constants.COVER_PATH_ARRAY[selectedChannel]) ? constants.COVER_PATH_ARRAY[selectedChannel] : constants.DEFAULT_IMAGE_NOT_FOUND;
+    const coverPath = (constants.COVER_PATH_ARRAY && constants.COVER_PATH_ARRAY[selectedChannel]) ? constants.COVER_PATH_ARRAY[selectedChannel] : constants.DEFAULT_IMAGE_NOT_FOUND;
 
     // Update MediaSession metadata for lockscreen controls
     if (constants.MEDIASESSION_NAME in navigator) {
@@ -328,8 +328,8 @@ function setTrackMetadata(trackMetadata) {
 // Setup previous/next track commands for MediaSession
 function setLockscreenTrackCommands() {
     if (constants.MEDIASESSION_NAME in navigator) {
-        var previousIndex = selectedChannel === 0 ? 2 : (selectedChannel - 1);
-        var nextIndex = selectedChannel === 2 ? 0 : (selectedChannel + 1);
+        const previousIndex = selectedChannel === 0 ? 2 : (selectedChannel - 1);
+        const nextIndex = selectedChannel === 2 ? 0 : (selectedChannel + 1);
 
         navigator.mediaSession.setActionHandler(constants.PREVIOUS_TRACK_ACTION_NAME, previousIndex !== undefined ? function () {
             playChannel(previousIndex);
@@ -342,9 +342,9 @@ function setLockscreenTrackCommands() {
 
 // Update the HTML UI with current now-playing info
 export function feedNowPlaying(nowPlayingMetadata) {
-    var meta = nowPlayingMetadata || {};
-    var main = nowPlayingMetadatas.artist + constants.ARTIST_TITLE_SPLIT_STRING + nowPlayingMetadatas.title;
-    var otherInfo = (nowPlayingMetadatas.album || '') +
+    const meta = nowPlayingMetadata || {};
+    const main = nowPlayingMetadatas.artist + constants.ARTIST_TITLE_SPLIT_STRING + nowPlayingMetadatas.title;
+    const otherInfo = (nowPlayingMetadatas.album || '') +
         (nowPlayingMetadatas.label ? constants.ARTIST_TITLE_SPLIT_STRING + nowPlayingMetadatas.label : '') +
         (nowPlayingMetadatas.year ? constants.LINE_BREAK + nowPlayingMetadatas.year : '') +
         (nowPlayingMetadatas.country ? ', ' + nowPlayingMetadatas.country : '');
@@ -353,9 +353,9 @@ export function feedNowPlaying(nowPlayingMetadata) {
     feedHTML(constants.NOW_PLAYING_DIV_EXT_ID, otherInfo);
     feedHTML(constants.NOW_PLAYING_COVER_DIV_ID, getCoverHTMLfromUrl(meta.image_file || constants.DEFAULT_IMAGE_NOT_FOUND));
 
-    var modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
-    var homeContainer = document.getElementById(constants.CONTAINER_ID);
-    var stopButton = document.getElementsByClassName(constants.CLOSE)[0];
+    const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
+    const homeContainer = document.getElementById(constants.CONTAINER_ID);
+    const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
 
     if (homeContainer) hideElement(homeContainer);
     if (modal) showElement(modal);
@@ -383,7 +383,7 @@ export function reset() {
     fetchStations();
     updateScrollingText();
     showElement(document.getElementById(constants.CONTAINER_ID));
-    for (var i = 0; i < channelButtons.length; i++) {
+    for (let i = 0; i < channelButtons.length; i++) {
         channelButtons[i].classList.remove(constants.IS_DISABLED_CSS_CLASS);
     }
 }
