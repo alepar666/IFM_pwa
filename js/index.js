@@ -150,6 +150,22 @@ function refreshScrollingTextAnimation() {
     el.style.animation = constants.EMPTY_VAL; // re-enable animation
 }
 
+export function showHomeUI() {
+    hideElement(document.getElementsByClassName(constants.CLOSE)[0]);
+    hideElement(document.getElementById(constants.TRACK_INFO_MODAL_ID));
+    showElement(document.getElementById(constants.CONTAINER_ID));
+}
+
+export function showNowPlayingUI() {
+    const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
+    const homeContainer = document.getElementById(constants.CONTAINER_ID);
+    const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
+
+    if (homeContainer) hideElement(homeContainer);
+    if (modal) showElement(modal);
+    if (stopButton) showElement(stopButton);
+}
+
 // Display a message in the designated message box
 export function displayMessage(message) {
     feedHTML(constants.DISPLAY_MESSAGE_BOX_ID, message);

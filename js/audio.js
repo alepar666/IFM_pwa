@@ -1,12 +1,12 @@
 import * as constants from './constants.js';
 import {
-    feedHTML,
-    showElement,
-    hideElement,
     displayMessage,
+    feedHTML,
     fetchedStations,
-    setScrollingText,
     fetchStations,
+    showHomeUI,
+    setScrollingText,
+    showNowPlayingUI,
     updateScrollingText
 } from './index.js';
 
@@ -24,10 +24,10 @@ let AUDIO_PLAYER;
 // Polling intervals for adaptive now-playing requests
 // changing constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC will affect in cascade the following ones since they are multiples
 let fastPollingInterval = constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC;
-let pollingInterval = fastPollingInterval*2;
-let slowPollingInterval = fastPollingInterval*3;
-let reallySlowPollingInterval = fastPollingInterval*4;
-let slowPollingDelay = constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC*4; // Delay before switching to slower polling (usually the limit of a jingle)
+let pollingInterval = fastPollingInterval * 2;
+let slowPollingInterval = fastPollingInterval * 3;
+let reallySlowPollingInterval = fastPollingInterval * 4;
+let slowPollingDelay = constants.NOW_PLAYING_REQUEST_TIMEOUT_MSEC * 4; // Delay before switching to slower polling (usually the limit of a jingle)
 let pollingSwitchTimer;
 // Flag indicating if the page is currently visible
 let isPageVisible = true;
@@ -44,14 +44,8 @@ const channelButtons = [
 // Setup event listeners after DOM content is loaded
 window.addEventListener('DOMContentLoaded', function () {
     // Bind each channel button to play the corresponding channel
-    channelButtons[0].addEventListener(constants.CLICK_EVENT_NAME, function () {
-        playChannel(0);
-    });
-    channelButtons[1].addEventListener(constants.CLICK_EVENT_NAME, function () {
-        playChannel(1);
-    });
-    channelButtons[2].addEventListener(constants.CLICK_EVENT_NAME, function () {
-        playChannel(2);
+    channelButtons.forEach((btn, index) => {
+        btn.addEventListener(constants.CLICK_EVENT_NAME, () => playChannel(index));
     });
 
     // Bind stop button to stop playback and reset UI
@@ -70,13 +64,12 @@ window.addEventListener('DOMContentLoaded', function () {
 
     // Disable text selection on touch devices for channel buttons
     if (isTouchDevice()) {
-        for (let i = 0; i < channelButtons.length; i++) {
-            const btn = channelButtons[i];
+        channelButtons.forEach(btn => {
             btn.style.userSelect = 'none';
             btn.style.webkitUserSelect = 'none';
             btn.style.msUserSelect = 'none';
             btn.style.MozUserSelect = 'none';
-        }
+        });
     }
 
     // Handle visibility change to throttle polling when the tab is hidden
@@ -107,33 +100,19 @@ function isTouchDevice() {
     return ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 }
 
-// Disable all channel buttons to prevent multiple clicks
-function disableChannelButtons() {
-    for (let i = 0; i < channelButtons.length; i++) {
-        channelButtons[i].disabled = true;
-    }
+// Disable/Enable all channel buttons to prevent multiple clicks
+function setDisabledButtonsState(disabled) {
+    channelButtons.forEach(btn => btn.disabled = disabled);
 }
 
-// Enable all channel buttons
-function enableChannelButtons() {
-    for (let i = 0; i < channelButtons.length; i++) {
-        channelButtons[i].disabled = false;
-    }
-}
 
 // Play a specific channel by index
 export async function playChannel(channelNumber) {
 
-    disableChannelButtons();
+    setDisabledButtonsState(true);
 
     // Show/hide relevant UI elements for now-playing info
-    const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
-    const homeContainer = document.getElementById(constants.CONTAINER_ID);
-    const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
-
-    if (homeContainer) hideElement(homeContainer);
-    if (modal) showElement(modal);
-    if (stopButton) showElement(stopButton);
+    showNowPlayingUI();
 
     // Ensure stations are loaded
     if (!fetchedStations || fetchedStations.length === 0) {
@@ -145,7 +124,7 @@ export async function playChannel(channelNumber) {
     const station = fetchedStations[channelNumber];
     if (!station || !station.src) {
         displayMessage('Station not available');
-        enableChannelButtons();
+        setDisabledButtonsState(false);
         return;
     }
 
@@ -183,7 +162,7 @@ export async function playChannel(channelNumber) {
         console.error("Error playing channel:", error);
         displayMessage("Error while loading " + station.title + ": No audio stream received.");
     } finally {
-        enableChannelButtons();
+        setDisabledButtonsState(false);
     }
 }
 
@@ -353,13 +332,7 @@ export function feedNowPlaying(nowPlayingMetadata) {
     feedHTML(constants.NOW_PLAYING_DIV_EXT_ID, otherInfo);
     feedHTML(constants.NOW_PLAYING_COVER_DIV_ID, getCoverHTMLfromUrl(meta.image_file || constants.DEFAULT_IMAGE_NOT_FOUND));
 
-    const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
-    const homeContainer = document.getElementById(constants.CONTAINER_ID);
-    const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
-
-    if (homeContainer) hideElement(homeContainer);
-    if (modal) showElement(modal);
-    if (stopButton) showElement(stopButton);
+    showNowPlayingUI();
 }
 
 // Helper to generate cover image HTML
@@ -378,12 +351,10 @@ export function reset() {
     previousTrackHash = constants.EMPTY_VAL;
     selectedChannel = constants.EMPTY_VAL;
     document.title = constants.PAGE_TITLE_DEFAULT;
-    hideElement(document.getElementsByClassName(constants.CLOSE)[0]);
-    hideElement(document.getElementById(constants.TRACK_INFO_MODAL_ID));
+    showHomeUI();
     fetchStations();
     updateScrollingText();
-    showElement(document.getElementById(constants.CONTAINER_ID));
-    for (let i = 0; i < channelButtons.length; i++) {
-        channelButtons[i].classList.remove(constants.IS_DISABLED_CSS_CLASS);
-    }
+    channelButtons.forEach(btn => {
+        btn.classList.remove(constants.IS_DISABLED_CSS_CLASS);
+    });
 }
