@@ -237,6 +237,7 @@ async function getNowPlaying() {
     }
 
     if (!currentNowPlayingUrl) return;
+    pollingInterval = fastPollingInterval
     nowPlayingRequestTimer = setTimeout(getNowPlaying, pollingInterval);
 }
 
