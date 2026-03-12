@@ -18,6 +18,7 @@ let nowPlayingRequestTimer;
 let selectedChannel;
 // Previous track hash to detect changes in now-playing metadata
 let previousTrackHash = constants.EMPTY_VAL;
+let previousArtworkUrl = constants.EMPTY_VAL;
 // Reference to the HTML audio element
 let AUDIO_PLAYER;
 
@@ -209,11 +210,19 @@ async function getNowPlaying() {
 
     // Update track metadata if it changed
     const metaDataHash = trackMetadata.title + trackMetadata.image_file;
+    const currentArtworkUrl = trackMetadata.image_file;
     if (previousTrackHash !== metaDataHash) {
         setTrackMetadata(trackMetadata);
         previousTrackHash = metaDataHash;
         feedNowPlaying(trackMetadata);
         pollingInterval = fastPollingInterval;
+        if(previousArtworkUrl === currentArtworkUrl){
+            // outdated artwork
+            showCoverLoading();
+        }else{
+            // new artwork
+            previousArtworkUrl = currentArtworkUrl;
+        }
     }
 
     if (!currentNowPlayingUrl) return;
@@ -335,6 +344,13 @@ export function feedNowPlaying(nowPlayingMetadata) {
     showNowPlayingUI();
 }
 
+function showCoverLoading() {
+    feedHTML(
+        constants.NOW_PLAYING_COVER_DIV_ID,
+        '<div class="cover-loading"></div>'
+    );
+}
+
 // Helper to generate cover image HTML
 function getCoverHTMLfromUrl(image_url) {
     return '<img src="' + image_url + '" style="width:90%" onerror="this.src=\'' + constants.DEFAULT_IMAGE_NOT_FOUND + '\'; this.onerror=null;">';
@@ -349,6 +365,7 @@ export function reset() {
     clearTimeout(pollingSwitchTimer);
     currentNowPlayingUrl = null;
     previousTrackHash = constants.EMPTY_VAL;
+    previousArtworkUrl = constants.EMPTY_VAL;
     selectedChannel = constants.EMPTY_VAL;
     document.title = constants.PAGE_TITLE_DEFAULT;
     showHomeUI();

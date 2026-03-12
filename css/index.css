@@ -272,6 +272,44 @@ div {
     max-height: 60%;
 }
 
+/* Loader per la cover */
+.cover-loading {
+    width: 90%;
+    aspect-ratio: 1 / 1;
+    margin: auto;
+
+    background: black;
+    border: 2px solid black;
+
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Linea rossa di scanning */
+.cover-loading::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,0,0,0.9),
+            transparent
+    );
+    box-shadow:
+            0 0 3px rgba(255,0,0,0.7),
+            0 0 6px rgba(255,0,0,0.3);
+    animation: coverScan 3s linear infinite;
+}
+
+/* Animazione scanline */
+@keyframes coverScan {
+    0%   { top: -4px; }
+    100% { top: calc(100% + 4px); }
+}
 :root {
     --fs-xs: clamp(0.5rem, 0.5rem + 1vw, 1.2rem);
     --fs-sm: clamp(0.7rem, 0.6rem + 1vw, 1.5rem);
