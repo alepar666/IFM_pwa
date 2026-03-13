@@ -192,10 +192,16 @@ export function hideElement(element) {
 }
 
 function showBuildInfo() {
+    if (!BUILD_NUMBER) return;
 
     const div = document.createElement("div");
 
-    div.innerText = `v${APP_VERSION} • build ${BUILD_NUMBER}`;
+    // Converte il timestamp in data leggibile
+    const d = new Date(BUILD_NUMBER);
+    const pad = n => n.toString().padStart(2, '0');
+    const formattedDate = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+    div.innerText = "Last update: "+formattedDate;
     div.style.position = "fixed";
     div.style.bottom = "10px";
     div.style.right = "10px";
