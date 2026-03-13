@@ -1,7 +1,7 @@
 {
   "name": "Intergalactic FM Web App",
-  "version": "1.0.0",
-  "build_number": 1773431022378,
+  "version": "1.0.1",
+  "build_number": 1773438590544,
   "short_name": "IFM",
   "start_url": "/app/",
   "scope": "/app/",
