@@ -5,7 +5,8 @@ export let fetchedStations = [];
 // Global AudioContext reference for audio processing
 export let audioContext;
 // Current app version, fetched from version.json
-let currentAppVersion = 'unknown';
+let APP_VERSION = 'unknown';
+let BUILD_NUMBER = 'unknown';
 
 // References to the channel buttons in the DOM
 const channelButtons = [
@@ -125,7 +126,8 @@ export async function fetchAppVersion() {
         });
         if (!response.ok) throw new Error('Failed to fetch version.json');
         const data = await response.json();
-        currentAppVersion = data.app_version || 'unknown';
+        APP_VERSION = data.version || 'unknown';
+        BUILD_NUMBER = data.build_number || 'unknown';
     } catch (err) {
         console.warn('Could not fetch app version:', err);
     }
@@ -136,7 +138,7 @@ export async function fetchAppVersion() {
 // Update scrolling text element with optional custom text
 export function updateScrollingText(customText) {
     const baseText = customText || constants.DEFAULT_SCROLLING_TEXT;
-    const fullText = `${baseText} - v${currentAppVersion}`; // append version
+    const fullText = `${baseText} - v${APP_VERSION}`; // append version
     setScrollingText(fullText);
 }
 
@@ -188,3 +190,33 @@ export function showElement(element) {
 export function hideElement(element) {
     element.style.display = constants.NONE;
 }
+
+function showBuildInfo() {
+
+    const div = document.createElement("div");
+
+    div.innerText = `v${APP_VERSION} • build ${BUILD_NUMBER}`;
+    div.style.position = "fixed";
+    div.style.bottom = "10px";
+    div.style.right = "10px";
+    div.style.background = "black";
+    div.style.color = "red";
+    div.style.padding = "6px 10px";
+    div.style.borderRadius = "6px";
+    div.style.fontSize = "12px";
+    div.style.zIndex = "9999";
+
+    document.body.appendChild(div);
+
+    setTimeout(() => div.remove(), 4000);
+}
+
+let tapCount = 0;
+document.getElementById('headerImage').addEventListener('click', () => {
+    tapCount++;
+    if (tapCount >= 5) {
+        showBuildInfo();
+        tapCount = 0;
+    }
+    setTimeout(() => tapCount = 0, 2000);
+});
