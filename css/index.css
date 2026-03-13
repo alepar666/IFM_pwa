@@ -71,23 +71,20 @@ div {
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-
     color: red;
     background-color: black;
     border: 0;
-
     font-size: clamp(2.4rem, 2rem + 1vw, 3.2rem);
     font-weight: 600;
-
     width: 64px;
     height: 64px;
-
     display: none;
     align-items: center;
     justify-content: center;
-
     line-height: 1;
-    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 .close:hover,
