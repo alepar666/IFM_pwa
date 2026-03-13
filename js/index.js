@@ -17,7 +17,10 @@ const channelButtons = [
 // Service Worker registration for caching and offline support
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
+        const basePath = window.location.pathname.replace(/[^\/]*$/, '');
+        navigator.serviceWorker.register(`${basePath}sw.js`, {
+            scope: basePath
+        })
             .then(reg => console.log('SW registered', reg))
             .catch(err => console.warn('SW registration failed', err));
     });
