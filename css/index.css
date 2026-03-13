@@ -85,6 +85,11 @@ div {
     touch-action: manipulation;
     -webkit-user-drag: none;
     user-drag: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.close:active {
+    color: red;
+    background-color: black;
 }
 
 .close:hover,
