@@ -1,7 +1,6 @@
 import * as constants from './constants.js';
+import { STATIONS } from "./stations.js";
 
-// Array to store the fetched station data from the server
-export let fetchedStations = [];
 // Global AudioContext reference for audio processing
 export let audioContext;
 // Current app version, fetched from version.json
@@ -21,9 +20,7 @@ if ('serviceWorker' in navigator) {
         const basePath = window.location.pathname.replace(/[^\/]*$/, '');
         navigator.serviceWorker.register(`${basePath}sw.js`, {
             scope: basePath
-        })
-            .then(reg => console.log('SW registered', reg))
-            .catch(err => console.warn('SW registration failed', err));
+        }).catch(err => console.warn('SW registration failed', err));
     });
 }
 
@@ -31,8 +28,6 @@ if ('serviceWorker' in navigator) {
 window.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(async () => {
-        // Fetch station list from server
-        await fetchStations();
 
         // Initialize AudioContext if not already initialized
         if (!audioContext) {
@@ -76,48 +71,6 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 });
 
-// Fetch the list of stations from a JSON file
-export async function fetchStations() {
-    try {
-        const response = await fetch(constants.STATIONS_JSON_URL, {
-            cache: "no-store" // prevent caching to always get latest
-        });
-        if (!response.ok) {
-            displayMessage(`Unable to load the playlist: ${response.status} - ${response.statusText}`);
-            return;
-        }
-
-        // Parse JSON response
-        const stationsJson = await response.json();
-        const [cbsInfo, dfInfo, tdmInfo] = stationsJson.stations;
-
-        // Populate the fetchedStations array with formatted station objects
-        fetchedStations = [
-            {
-                title: cbsInfo.name,
-                src: cbsInfo.url,
-                howl: null
-            },
-            {
-                title: dfInfo.name,
-                src: dfInfo.url,
-                howl: null
-            },
-            {
-                title: tdmInfo.name,
-                src: tdmInfo.url,
-                howl: null
-            }
-        ];
-
-        // Notify that the system is ready
-        displayMessage(constants.SYSTEM_READY_MSG);
-    } catch (err) {
-        displayMessage(`Error fetching stations: ${err}`);
-        console.error(err);
-    }
-}
-
 // Fetch the current app version from version.json
 export async function fetchAppVersion() {
     try {
@@ -133,6 +86,7 @@ export async function fetchAppVersion() {
     }
     // Update scrolling text immediately after fetching version
     updateScrollingText();
+    displayMessage(constants.SYSTEM_READY_MSG);
 }
 
 // Update scrolling text element with optional custom text

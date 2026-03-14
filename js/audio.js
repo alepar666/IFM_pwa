@@ -2,13 +2,12 @@ import * as constants from './constants.js';
 import {
     displayMessage,
     feedHTML,
-    fetchedStations,
-    fetchStations,
     showHomeUI,
     setScrollingText,
     showNowPlayingUI,
     updateScrollingText
 } from './index.js';
+import { STATIONS } from "./stations.js";
 
 // Current URL for fetching now-playing info
 let currentNowPlayingUrl;
@@ -115,19 +114,7 @@ export async function playChannel(channelNumber) {
     // Show/hide relevant UI elements for now-playing info
     showNowPlayingUI();
 
-    // Ensure stations are loaded
-    if (!fetchedStations || fetchedStations.length === 0) {
-        fetchStations().catch(function (err) {
-            console.error("Fetch stations failed:", err);
-        });
-    }
-
-    const station = fetchedStations[channelNumber];
-    if (!station || !station.src) {
-        displayMessage('Station not available');
-        setDisabledButtonsState(false);
-        return;
-    }
+    const station = STATIONS[channelNumber];
 
     try {
         selectedChannel = channelNumber;
@@ -369,7 +356,7 @@ export function reset() {
     selectedChannel = constants.EMPTY_VAL;
     document.title = constants.PAGE_TITLE_DEFAULT;
     showHomeUI();
-    fetchStations();
+    displayMessage(constants.SYSTEM_READY_MSG);
     updateScrollingText();
     channelButtons.forEach(btn => {
         btn.classList.remove(constants.IS_DISABLED_CSS_CLASS);

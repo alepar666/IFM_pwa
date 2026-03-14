@@ -1,5 +1,4 @@
 // Constants for PWA version of Intergalactic FM
-export const STATIONS_JSON_URL = 'https://intergalactic.fm/sd/stations.json';
 export const DISPLAY_MESSAGE_BOX_ID = 'messageBox';
 export const DONATE_URL = 'https://www.paypal.com/donate/?hosted_button_id=MV4HVU2D4W3LJ';
 export const WEBSITE_URL = 'https://intergalactic.fm/';
