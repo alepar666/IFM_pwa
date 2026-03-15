@@ -7,7 +7,7 @@ import {
     showNowPlayingUI,
     updateScrollingText
 } from './index.js';
-import { STATIONS } from "./stations.js";
+import {STATIONS} from "./stations.js";
 
 // Current URL for fetching now-playing info
 let currentNowPlayingUrl;
@@ -203,10 +203,10 @@ async function getNowPlaying() {
         previousTrackHash = metaDataHash;
         feedNowPlaying(trackMetadata);
         pollingInterval = fastPollingInterval;
-        if(previousArtworkUrl === currentArtworkUrl){
+        if (previousArtworkUrl === currentArtworkUrl) {
             // outdated artwork
             showCoverLoading();
-        }else{
+        } else {
             // new artwork
             previousArtworkUrl = currentArtworkUrl;
         }

@@ -1,5 +1,4 @@
 import * as constants from './constants.js';
-import { STATIONS } from "./stations.js";
 
 // Global AudioContext reference for audio processing
 export let audioContext;
@@ -26,36 +25,27 @@ if ('serviceWorker' in navigator) {
 
 // Setup event listeners and initialization after DOM content loaded
 window.addEventListener('DOMContentLoaded', () => {
-
-    setTimeout(async () => {
-
-        // Initialize AudioContext if not already initialized
-        if (!audioContext) {
-            audioContext = new(window.AudioContext || window.webkitAudioContext)();
-            const buffer = audioContext.createBuffer(1, 1, 22050);
-            const source = audioContext.createBufferSource();
-            source.buffer = buffer;
-            source.connect(audioContext.destination);
-            source.start(0);
-        }
-
-        // Prevent pinch-zoom gestures on iOS
-        document.addEventListener('gesturestart', e => e.preventDefault());
-        document.addEventListener('gesturechange', e => e.preventDefault());
-        document.addEventListener('gestureend', e => e.preventDefault());
-
-    }, 50); // slight delay to ensure DOM elements exist
-
+    // Initialize AudioContext if not already initialized
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const buffer = audioContext.createBuffer(1, 1, 22050);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+    }
+    // Prevent pinch-zoom gestures on iOS
+    document.addEventListener('gesturestart', e => e.preventDefault());
+    document.addEventListener('gesturechange', e => e.preventDefault());
+    document.addEventListener('gestureend', e => e.preventDefault());
     // Fetch the app version from version.json
     fetchAppVersion();
     // Update scrolling text immediately
     updateScrollingText();
     // Restart the scrolling text animation
     refreshScrollingTextAnimation();
-
     // Enable all channel buttons
     channelButtons.forEach(btn => btn.disabled = false);
-
     // Bind click events for external links
     document.getElementById(constants.DONATE_LINK_ID).addEventListener(constants.CLICK_EVENT_NAME,
         () => {
@@ -119,7 +109,6 @@ export function showNowPlayingUI() {
     const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
     const homeContainer = document.getElementById(constants.CONTAINER_ID);
     const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
-
     if (homeContainer) hideElement(homeContainer);
     if (modal) showElement(modal);
     if (stopButton) showElement(stopButton);
@@ -147,15 +136,11 @@ export function hideElement(element) {
 
 function showBuildInfo() {
     if (!BUILD_NUMBER) return;
-
     const div = document.createElement("div");
-
-    // Converte il timestamp in data leggibile
     const d = new Date(BUILD_NUMBER);
     const pad = n => n.toString().padStart(2, '0');
     const formattedDate = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-
-    div.innerText = "Last update: "+formattedDate;
+    div.innerText = "Last update: " + formattedDate;
     div.style.position = "fixed";
     div.style.bottom = "10px";
     div.style.right = "10px";
@@ -165,9 +150,7 @@ function showBuildInfo() {
     div.style.borderRadius = "6px";
     div.style.fontSize = "12px";
     div.style.zIndex = "9999";
-
     document.body.appendChild(div);
-
     setTimeout(() => div.remove(), 4000);
 }
 
