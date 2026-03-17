@@ -157,7 +157,8 @@ div {
     box-sizing: border-box;
     margin-left: 5vw;
     margin-right: 5vw;
-    max-height: 50vh;}
+    max-height: 50vh;
+}
 
 .channel {
     width: 100%;
@@ -224,19 +225,17 @@ div {
 .links {
     box-sizing: border-box;
     margin: 10vw;
-    max-height: 50vh;
+    max-height: 15vh;
     font-size: clamp(0.5rem, 0.5rem + 0.5vw, 1.5rem);
 }
 
 /* Modal Content */
-
 #nowPlaying {
     margin-left: 1%;
     margin-right: 1%;
     margin-top: 0%;
     text-align: center;
 }
-
 #nowPlayingExt {
     margin-left: 1%;
     margin-right: 1%;
@@ -244,7 +243,6 @@ div {
     text-align: center;
     font-size: clamp(0.8rem, 0.3rem + 0.9vw, 1.8rem);
 }
-
 #nowPlayingCover {
     box-sizing: border-box;
     margin: 1em;

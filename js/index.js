@@ -25,19 +25,22 @@ if ('serviceWorker' in navigator) {
 
 // Setup event listeners and initialization after DOM content loaded
 window.addEventListener('DOMContentLoaded', () => {
-    // Initialize AudioContext if not already initialized
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const buffer = audioContext.createBuffer(1, 1, 22050);
-        const source = audioContext.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioContext.destination);
-        source.start(0);
-    }
-    // Prevent pinch-zoom gestures on iOS
-    document.addEventListener('gesturestart', e => e.preventDefault());
-    document.addEventListener('gesturechange', e => e.preventDefault());
-    document.addEventListener('gestureend', e => e.preventDefault());
+    setTimeout(async () => {
+        // Initialize AudioContext if not already initialized
+        if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const buffer = audioContext.createBuffer(1, 1, 22050);
+            const source = audioContext.createBufferSource();
+            source.buffer = buffer;
+            source.connect(audioContext.destination);
+            source.start(0);
+        }
+        // Prevent pinch-zoom gestures on iOS
+        document.addEventListener('gesturestart', e => e.preventDefault());
+        document.addEventListener('gesturechange', e => e.preventDefault());
+        document.addEventListener('gestureend', e => e.preventDefault());
+
+    }, 50);
     // Fetch the app version from version.json
     fetchAppVersion();
     // Update scrolling text immediately
