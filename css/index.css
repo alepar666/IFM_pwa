@@ -13,17 +13,18 @@ body {
     background-color: black;
     color: white;
     font-family: 'Michroma', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    overflow: clip;
     overscroll-behavior: none;
     margin: 0;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    height: 100dvh;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     letter-spacing: 0.08em;
     font-size: clamp(1rem, 0.9rem + 0.6vw, 1.5rem);
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100dvh;
 }
 
 button,
