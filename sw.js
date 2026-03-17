@@ -1,27 +1,21 @@
 // increment at every new deploy
-const CACHE_NAME = `ifm-cache-1773771080449`;
+const CACHE_NAME = `ifm-cache-1773771291248`;
 
-// BASE_PATH sicuro: sempre con slash finale
-let BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
+// Base path dinamico
+const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
 
-// Funzione helper per generare URL relativi corretti
-function assetPath(file) {
-    return new URL(file, self.location.origin + BASE_PATH).toString();
-}
-
-// Asset da cacheare
 const ASSETS_TO_CACHE = [
-    assetPath(''),
-    assetPath('index.html'),
-    assetPath('css/index.css'),
-    assetPath('js/constants.js'),
-    assetPath('js/index.js'),
-    assetPath('js/audio.js'),
-    assetPath('img/favicon.ico'),
-    assetPath('img/logo.png'),
-    assetPath('img/cbs.png'),
-    assetPath('img/df.png'),
-    assetPath('img/tdm.png')
+    `${BASE_PATH}`,
+    `${BASE_PATH}index.html`,
+    `${BASE_PATH}css/index.css`,
+    `${BASE_PATH}js/constants.js`,
+    `${BASE_PATH}js/index.js`,
+    `${BASE_PATH}js/audio.js`,
+    `${BASE_PATH}img/favicon.ico`,
+    `${BASE_PATH}img/logo.png`,
+    `${BASE_PATH}img/cbs.png`,
+    `${BASE_PATH}img/df.png`,
+    `${BASE_PATH}img/tdm.png`
 ];
 
 self.addEventListener('install', event => {
@@ -29,7 +23,6 @@ self.addEventListener('install', event => {
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(ASSETS_TO_CACHE))
             .then(() => self.skipWaiting())
-            .catch(err => console.warn('SW install failed', err))
     );
 });
 
@@ -47,34 +40,34 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    if (url.pathname === BASE_PATH + 'version.json') {
+    // Gestione version.json
+    if (url.pathname.endsWith('/version.json')) {
         event.respondWith(
-            fetch(event.request).catch(() =>
-                new Response(JSON.stringify({ app_version: 'unknown' }), {
+            fetch(event.request)
+                .catch(() => new Response(JSON.stringify({ app_version: 'unknown' }), {
                     headers: { 'Content-Type': 'application/json' }
-                })
-            )
+                }))
         );
         return;
     }
 
-    if (
-        url.pathname === BASE_PATH ||
-        url.pathname === BASE_PATH + 'index.html' ||
-        url.pathname === BASE_PATH + 'js/index.js'
-    ) {
+    // Cache-first per index.html e index.js
+    if (url.pathname === `${BASE_PATH}` || url.pathname === `${BASE_PATH}index.html` || url.pathname === `${BASE_PATH}js/index.js`) {
         event.respondWith(
             fetch(event.request)
                 .then(resp => {
-                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, resp.clone()));
-                    return resp;
+                    const respClone = resp.clone(); // clona subito per la cache
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, respClone));
+                    return resp; // originale al browser
                 })
-                .catch(() => caches.match(event.request))
+                .catch(() => caches.match(event.request)) // fallback offline
         );
         return;
     }
 
+    // Altri asset: cache-first
     event.respondWith(
-        caches.match(event.request).then(resp => resp || fetch(event.request).catch(() => new Response('', { status: 204 })))
+        caches.match(event.request)
+            .then(resp => resp || fetch(event.request))
     );
 });
