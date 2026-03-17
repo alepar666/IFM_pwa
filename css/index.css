@@ -22,9 +22,8 @@ body {
     text-rendering: optimizeLegibility;
     letter-spacing: 0.08em;
     font-size: clamp(1rem, 0.9rem + 0.6vw, 1.5rem);
-    overflow-x: hidden;
-    overflow-y: auto;
-    min-height: 100dvh;
+    overflow: hidden;
+    min-height: 100vh;
 }
 
 button,
@@ -143,7 +142,7 @@ div {
     position: relative;
     text-align: center;
     width: 100%;
-    max-height: calc(var(--vh, 1vh) * 50);
+    max-height: 50vh;
 }
 
 .channel:not(:active) {
@@ -158,8 +157,7 @@ div {
     box-sizing: border-box;
     margin-left: 5vw;
     margin-right: 5vw;
-    max-height: calc(var(--vh, 1vh) * 50);
-}
+    max-height: 50vh;}
 
 .channel {
     width: 100%;
@@ -226,7 +224,7 @@ div {
 .links {
     box-sizing: border-box;
     margin: 10vw;
-    max-height: calc(var(--vh, 1vh) * 50);
+    max-height: 50vh;
     font-size: clamp(0.5rem, 0.5rem + 0.5vw, 1.5rem);
 }
 
