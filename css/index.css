@@ -143,7 +143,7 @@ div {
     position: relative;
     text-align: center;
     width: 100%;
-    max-height: 50vh;
+    max-height: none;
 }
 
 .channel:not(:active) {
@@ -158,7 +158,7 @@ div {
     box-sizing: border-box;
     margin-left: 5vw;
     margin-right: 5vw;
-    max-height: 50vh;
+    max-height: none;
 }
 
 .channel {
@@ -226,7 +226,7 @@ div {
 .links {
     box-sizing: border-box;
     margin: 10vw;
-    max-height: 15vh;
+    max-height: none;
     font-size: clamp(0.5rem, 0.5rem + 0.5vw, 1.5rem);
 }
 
