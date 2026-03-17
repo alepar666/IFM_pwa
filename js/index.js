@@ -5,6 +5,7 @@ export let audioContext;
 // Current app version, fetched from version.json
 let APP_VERSION = 'unknown';
 let BUILD_NUMBER = 'unknown';
+let BUILD_NAME = 'unknown';
 
 // References to the channel buttons in the DOM
 const channelButtons = [
@@ -74,6 +75,7 @@ export async function fetchAppVersion() {
         const data = await response.json();
         APP_VERSION = data.version || 'unknown';
         BUILD_NUMBER = data.build_number || 'unknown';
+        BUILD_NAME = data.build_name || 'unknown';
     } catch (err) {
         console.warn('Could not fetch app version:', err);
     }
@@ -143,7 +145,7 @@ function showBuildInfo() {
     const d = new Date(BUILD_NUMBER);
     const pad = n => n.toString().padStart(2, '0');
     const formattedDate = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    div.innerText = "Last update: " + formattedDate;
+    div.innerText = "buildName: " +BUILD_NAME+ " - date: " + formattedDate;
     div.style.position = "fixed";
     div.style.bottom = "10px";
     div.style.right = "10px";
