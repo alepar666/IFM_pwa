@@ -297,7 +297,6 @@ function setTrackMetadata(trackMetadata) {
                 src: coverPath
             }]
         });
-        navigator.mediaSession.playbackState = 'playing' ? 'playing' : 'paused';
     }
 }
 
