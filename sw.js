@@ -1,5 +1,5 @@
 // increment at every new deploy
-const CACHE_NAME = `ifm-cache-1773774882166`;
+const CACHE_NAME = `ifm-cache-1773838719671`;
 
 // Base path dinamico
 const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
