@@ -294,7 +294,7 @@ function setTrackMetadata(trackMetadata) {
             artist: artist,
             album: nowPlayingMetadatas.album,
             artwork: [{
-                src: coverPath
+                src: nowPlayingMetadatas.artwork_url
             }]
         });
     }
