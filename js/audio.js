@@ -294,9 +294,10 @@ function setTrackMetadata(trackMetadata) {
             artist: artist,
             album: nowPlayingMetadatas.album,
             artwork: [{
-                src: coverPath, sizes: '512x512', type: 'image/png'
+                src: coverPath
             }]
         });
+        navigator.mediaSession.playbackState = 'playing' ? 'playing' : 'paused';
     }
 }
 
