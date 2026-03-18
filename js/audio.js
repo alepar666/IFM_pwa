@@ -286,7 +286,15 @@ function setTrackMetadata(trackMetadata) {
     setScrollingText(trackMetadatas[5] || constants.DEFAULT_SCROLLING_TEXT || '');
 
     const coverPath = (constants.COVER_PATH_ARRAY && constants.COVER_PATH_ARRAY[selectedChannel]) ? constants.COVER_PATH_ARRAY[selectedChannel] : constants.DEFAULT_IMAGE_NOT_FOUND;
-
+    const artworkSrc =
+        nowPlayingMetadatas.artwork_url && nowPlayingMetadatas.artwork_url !== constants.DEFAULT_IMAGE_NOT_FOUND
+            ? nowPlayingMetadatas.artwork_url
+            : coverPath || constants.DEFAULT_IMAGE_NOT_FOUND;
+    const artwork = [
+        { src: artworkSrc, sizes: "96x96",   type: "image/png" },
+        { src: artworkSrc, sizes: "256x256", type: "image/png" },
+        { src: artworkSrc, sizes: "512x512", type: "image/png" }
+    ];
     // Update MediaSession metadata for lockscreen controls
     if (constants.MEDIASESSION_NAME in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
@@ -294,7 +302,7 @@ function setTrackMetadata(trackMetadata) {
             artist: artist,
             album: nowPlayingMetadatas.album,
             artwork: [{
-                src: nowPlayingMetadatas.artwork_url
+                src: artwork
             }]
         });
     }
