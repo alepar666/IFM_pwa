@@ -1,5 +1,5 @@
 // increment at every new deploy
-const CACHE_NAME = `ifm-cache-1774348638095`;
+const CACHE_NAME = `ifm-cache-1774348903198`;
 
 // Base path dinamico
 const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
@@ -15,21 +15,21 @@ const ASSETS_TO_CACHE = [
     `${BASE_PATH}img/logo.png`,
     `${BASE_PATH}img/cbs.png`,
     `${BASE_PATH}img/df.png`,
-    `${BASE_PATH}img/tdm.png`
+    `${BASE_PATH}img/tdm.png`,
+    `${BASE_PATH}manifest.json`,
+    `${BASE_PATH}version.json`
 ];
-
-console.log('[SW] BASE_PATH:', BASE_PATH);
-console.log('[SW] Assets to cache:', ASSETS_TO_CACHE);
 
 self.addEventListener('install', event => {
     console.log('[SW] Install event');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('[SW] Caching assets...');
+                console.log('[SW] Caching assets...', ASSETS_TO_CACHE);
                 return cache.addAll(ASSETS_TO_CACHE);
             })
             .then(() => self.skipWaiting())
+            .then(() => console.log('[SW] Skip waiting after install'))
     );
 });
 
@@ -39,7 +39,10 @@ self.addEventListener('activate', event => {
         caches.keys().then(keys =>
             Promise.all(
                 keys.filter(key => key !== CACHE_NAME)
-                    .map(key => caches.delete(key))
+                    .map(key => {
+                        console.log('[SW] Deleting old cache:', key);
+                        return caches.delete(key);
+                    })
             )
         ).then(() => self.clients.claim())
     );
@@ -47,23 +50,54 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
+    const pathname = url.pathname;
 
-    // Forza sempre fetch dal server per tutti gli asset nella lista
-    if (ASSETS_TO_CACHE.some(path => url.pathname === path)) {
+    // Force network-first for HTML, JS, CSS, version.json, manifest, favicon
+    if (
+        pathname === `${BASE_PATH}` ||
+        pathname === `${BASE_PATH}index.html` ||
+        pathname.startsWith(`${BASE_PATH}js/`) ||
+        pathname.startsWith(`${BASE_PATH}css/`) ||
+        pathname.endsWith('version.json') ||
+        pathname.endsWith('manifest.json') ||
+        pathname.endsWith('favicon.ico')
+    ) {
+        console.log('[SW] Network-first request for:', pathname);
         event.respondWith(
-            fetch(event.request, { cache: 'no-store' }) // bypass browser cache
+            fetch(event.request, { cache: 'no-store' })
                 .then(resp => {
                     const respClone = resp.clone();
                     caches.open(CACHE_NAME).then(cache => cache.put(event.request, respClone));
                     return resp;
                 })
+                .catch(() => caches.match(event.request))
         );
         return;
     }
 
-    // Altri asset: cache-first
+    // Cache-first per immagini
+    if (pathname.startsWith(`${BASE_PATH}img/`)) {
+        event.respondWith(
+            caches.match(event.request).then(resp => {
+                if (resp) {
+                    console.log('[SW] Serving from cache:', pathname);
+                    return resp;
+                }
+                console.log('[SW] Fetching from network:', pathname);
+                return fetch(event.request)
+                    .then(resp => {
+                        const respClone = resp.clone();
+                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, respClone));
+                        return resp;
+                    });
+            })
+        );
+        return;
+    }
+
+    // Default: network fallback to cache
     event.respondWith(
-        caches.match(event.request)
-            .then(resp => resp || fetch(event.request))
+        fetch(event.request)
+            .catch(() => caches.match(event.request))
     );
 });
