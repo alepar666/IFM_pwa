@@ -14,13 +14,43 @@ const channelButtons = [
     document.getElementById(constants.TDM_BUTTON_ID)
 ];
 
-// Service Worker registration for caching and offline support
+// Service Worker registration + FORCE UPDATE (fix iOS PWA)
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         const basePath = window.location.pathname.replace(/[^\/]*$/, '');
+
         navigator.serviceWorker.register(`${basePath}sw.js`, {
             scope: basePath
+        }).then(reg => {
+
+            console.log('[SW] Registered with scope:', basePath);
+
+            if (reg.waiting) {
+                console.log('[SW] Waiting worker found → forcing activation');
+                reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+            }
+
+            reg.addEventListener('updatefound', () => {
+                console.log('[SW] Update found');
+
+                const newWorker = reg.installing;
+
+                newWorker.addEventListener('statechange', () => {
+                    console.log('[SW] New worker state:', newWorker.state);
+
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        console.log('[SW] New version installed → reloading');
+                        window.location.reload();
+                    }
+                });
+            });
+
         }).catch(err => console.warn('SW registration failed', err));
+
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            console.log('[SW] Controller changed → reload');
+            window.location.reload();
+        });
     });
 }
 

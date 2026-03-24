@@ -1,5 +1,5 @@
 // increment at every new deploy
-const CACHE_NAME = `ifm-cache-1774362952127`;
+const CACHE_NAME = `ifm-cache-1774364121476`;
 
 // Base path dinamico
 const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
@@ -19,6 +19,13 @@ const ASSETS_TO_CACHE = [
     `${BASE_PATH}manifest.json`,
     `${BASE_PATH}version.json`
 ];
+
+self.addEventListener('message', event => {
+    if (event.data && event.data.type === 'SKIP_WAITING') {
+        console.log('[SW] Skip waiting triggered via message');
+        self.skipWaiting();
+    }
+});
 
 self.addEventListener('install', event => {
     console.log('[SW] Install event');
@@ -52,7 +59,7 @@ self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
     const pathname = url.pathname;
 
-    // Force network-first for HTML, JS, CSS, version.json, manifest, favicon
+    // Network-first per file critici
     if (
         pathname === `${BASE_PATH}` ||
         pathname === `${BASE_PATH}index.html` ||
@@ -95,7 +102,7 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Default: network fallback to cache
+    // Default
     event.respondWith(
         fetch(event.request)
             .catch(() => caches.match(event.request))
