@@ -1,5 +1,5 @@
 // increment at every new deploy
-const CACHE_NAME = `ifm-cache-1774346003131`;
+const CACHE_NAME = `ifm-cache-1774348638095`;
 
 // Base path dinamico
 const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
@@ -29,67 +29,33 @@ self.addEventListener('install', event => {
                 console.log('[SW] Caching assets...');
                 return cache.addAll(ASSETS_TO_CACHE);
             })
-            .then(() => {
-                console.log('[SW] Skip waiting after install');
-                return self.skipWaiting();
-            })
+            .then(() => self.skipWaiting())
     );
 });
 
 self.addEventListener('activate', event => {
     console.log('[SW] Activate event');
     event.waitUntil(
-        caches.keys().then(keys => {
-            console.log('[SW] Existing caches:', keys);
-            return Promise.all(
+        caches.keys().then(keys =>
+            Promise.all(
                 keys.filter(key => key !== CACHE_NAME)
-                    .map(key => {
-                        console.log('[SW] Deleting old cache:', key);
-                        return caches.delete(key);
-                    })
-            );
-        }).then(() => {
-            console.log('[SW] Clients claimed');
-            return self.clients.claim();
-        })
+                    .map(key => caches.delete(key))
+            )
+        ).then(() => self.clients.claim())
     );
 });
 
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-    console.log('[SW] Fetch request for:', url.pathname);
 
-    // Gestione version.json
-    if (url.pathname.endsWith('/version.json')) {
-        console.log('[SW] Fetching version.json');
+    // Forza sempre fetch dal server per tutti gli asset nella lista
+    if (ASSETS_TO_CACHE.some(path => url.pathname === path)) {
         event.respondWith(
-            fetch(event.request)
-                .catch(() => {
-                    console.log('[SW] version.json fetch failed, returning fallback');
-                    return new Response(JSON.stringify({ app_version: 'unknown' }), {
-                        headers: { 'Content-Type': 'application/json' }
-                    });
-                })
-        );
-        return;
-    }
-
-    // Cache-first per index.html e index.js
-    if (url.pathname === `${BASE_PATH}` || url.pathname === `${BASE_PATH}index.html` || url.pathname === `${BASE_PATH}js/index.js`) {
-        console.log('[SW] Cache-first strategy for:', url.pathname);
-        event.respondWith(
-            fetch(event.request)
+            fetch(event.request, { cache: 'no-store' }) // bypass browser cache
                 .then(resp => {
                     const respClone = resp.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        console.log('[SW] Updating cache for:', url.pathname);
-                        cache.put(event.request, respClone);
-                    });
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, respClone));
                     return resp;
-                })
-                .catch(() => {
-                    console.log('[SW] Fetch failed, using cached version for:', url.pathname);
-                    return caches.match(event.request);
                 })
         );
         return;
@@ -98,13 +64,6 @@ self.addEventListener('fetch', event => {
     // Altri asset: cache-first
     event.respondWith(
         caches.match(event.request)
-            .then(resp => {
-                if (resp) {
-                    console.log('[SW] Serving from cache:', url.pathname);
-                    return resp;
-                }
-                console.log('[SW] Fetching from network:', url.pathname);
-                return fetch(event.request);
-            })
+            .then(resp => resp || fetch(event.request))
     );
 });
