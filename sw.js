@@ -1,5 +1,5 @@
 // increment at every new deploy
-const CACHE_NAME = `ifm-cache-1774365581117`;
+const CACHE_NAME = `ifm-cache-1774431781271`;
 
 // Base path dinamico
 const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
@@ -22,17 +22,17 @@ const ASSETS_TO_CACHE = [
 
 self.addEventListener('message', event => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
-        console.log('[SW] Skip waiting triggered via message');
+        //console.log('[SW] Skip waiting triggered via message');
         self.skipWaiting();
     }
 });
 
 self.addEventListener('install', event => {
-    console.log('[SW] Install event');
+    //console.log('[SW] Install event');
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('[SW] Caching assets...', ASSETS_TO_CACHE);
+                //console.log('[SW] Caching assets...', ASSETS_TO_CACHE);
                 return cache.addAll(ASSETS_TO_CACHE);
             })
             .then(() => self.skipWaiting())
@@ -41,13 +41,13 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-    console.log('[SW] Activate event');
+    //console.log('[SW] Activate event');
     event.waitUntil(
         caches.keys().then(keys =>
             Promise.all(
                 keys.filter(key => key !== CACHE_NAME)
                     .map(key => {
-                        console.log('[SW] Deleting old cache:', key);
+                        //console.log('[SW] Deleting old cache:', key);
                         return caches.delete(key);
                     })
             )
@@ -58,8 +58,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
     const pathname = url.pathname;
-
-    // Network-first per file critici
     if (
         pathname === `${BASE_PATH}` ||
         pathname === `${BASE_PATH}index.html` ||
@@ -69,7 +67,7 @@ self.addEventListener('fetch', event => {
         pathname.endsWith('manifest.json') ||
         pathname.endsWith('favicon.ico')
     ) {
-        console.log('[SW] Network-first request for:', pathname);
+        //console.log('[SW] Network-first request for:', pathname);
         event.respondWith(
             fetch(event.request, { cache: 'no-store' })
                 .then(resp => {
@@ -82,15 +80,14 @@ self.addEventListener('fetch', event => {
         return;
     }
 
-    // Cache-first per immagini
     if (pathname.startsWith(`${BASE_PATH}img/`)) {
         event.respondWith(
             caches.match(event.request).then(resp => {
                 if (resp) {
-                    console.log('[SW] Serving from cache:', pathname);
+                    //console.log('[SW] Serving from cache:', pathname);
                     return resp;
                 }
-                console.log('[SW] Fetching from network:', pathname);
+                //console.log('[SW] Fetching from network:', pathname);
                 return fetch(event.request)
                     .then(resp => {
                         const respClone = resp.clone();

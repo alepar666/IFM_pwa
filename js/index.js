@@ -23,23 +23,20 @@ if ('serviceWorker' in navigator) {
             scope: basePath
         }).then(reg => {
 
-            console.log('[SW] Registered with scope:', basePath);
-
+            //console.log('[SW] Registered with scope:', basePath);
             if (reg.waiting) {
                 console.log('[SW] Waiting worker found → forcing activation');
                 reg.waiting.postMessage({ type: 'SKIP_WAITING' });
             }
 
             reg.addEventListener('updatefound', () => {
-                console.log('[SW] Update found');
-
+                //console.log('[SW] Update found');
                 const newWorker = reg.installing;
-
                 newWorker.addEventListener('statechange', () => {
-                    console.log('[SW] New worker state:', newWorker.state);
+                    //console.log('[SW] New worker state:', newWorker.state);
 
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        console.log('[SW] New version installed → reloading');
+                        //console.log('[SW] New version installed → reloading');
                         window.location.reload();
                     }
                 });
@@ -48,7 +45,7 @@ if ('serviceWorker' in navigator) {
         }).catch(err => console.warn('SW registration failed', err));
 
         navigator.serviceWorker.addEventListener('controllerchange', () => {
-            console.log('[SW] Controller changed → reload');
+            //console.log('[SW] Controller changed → reload');
             window.location.reload();
         });
     });
