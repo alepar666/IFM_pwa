@@ -15,41 +15,48 @@ const channelButtons = [
 ];
 
 // Service Worker registration + FORCE UPDATE (fix iOS PWA)
+let refreshing = false;
+
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
         const basePath = window.location.pathname.replace(/[^\/]*$/, '');
 
-        navigator.serviceWorker.register(`${basePath}sw.js`, {
-            scope: basePath
-        }).then(reg => {
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (refreshing) return;
+            refreshing = true;
+            window.location.reload();
+        });
 
-            //console.log('[SW] Registered with scope:', basePath);
+        try {
+            const reg = await navigator.serviceWorker.register(`${basePath}sw.js`, {
+                scope: basePath
+            });
+
             if (reg.waiting) {
-                console.log('[SW] Waiting worker found → forcing activation');
                 reg.waiting.postMessage({ type: 'SKIP_WAITING' });
             }
 
             reg.addEventListener('updatefound', () => {
-                //console.log('[SW] Update found');
                 const newWorker = reg.installing;
-                newWorker.addEventListener('statechange', () => {
-                    //console.log('[SW] New worker state:', newWorker.state);
+                if (!newWorker) return;
 
+                newWorker.addEventListener('statechange', () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        //console.log('[SW] New version installed → reloading');
-                        window.location.reload();
+                        newWorker.postMessage({ type: 'SKIP_WAITING' });
                     }
                 });
             });
 
-        }).catch(err => console.warn('SW registration failed', err));
+            setInterval(() => {
+                reg.update().catch(() => {});
+            }, 60 * 60 * 1000);
 
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-            //console.log('[SW] Controller changed → reload');
-            window.location.reload();
-        });
+        } catch (err) {
+            console.warn('SW registration failed', err);
+        }
     });
 }
+
 
 // Setup event listeners and initialization after DOM content loaded
 window.addEventListener('DOMContentLoaded', () => {
