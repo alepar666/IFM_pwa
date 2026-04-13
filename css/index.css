@@ -230,6 +230,10 @@ div {
     font-size: clamp(0.5rem, 0.5rem + 0.5vw, 1.5rem);
 }
 
+h5{
+   margin: 0;
+}
+
 /* Modal Content */
 #nowPlaying {
     margin-left: 1%;
