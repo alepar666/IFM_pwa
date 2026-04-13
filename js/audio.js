@@ -8,6 +8,7 @@ import {
     updateScrollingText
 } from './index.js';
 import {STATIONS} from "./stations.js";
+import {MODAL_CONTENT} from "./constants.js";
 
 // Current URL for fetching now-playing info
 let currentNowPlayingUrl;
@@ -375,11 +376,11 @@ https://github.com/web-scrobbler/web-scrobbler/blob/master/src/connectors/interg
 function removeWebConnectorDependencies() {
     AUDIO_PLAYER.classList.remove(constants.VJS_PLAY_CONTROL_CLASS);
     AUDIO_PLAYER.classList.remove(constants.VJS_PLAYING_CLASS);
-    document.getElementById(constants.NOW_PLAYING_DIV_ID).classList.remove(constants.TRACK_META_CLASS);
+    document.getElementById(constants.MODAL_CONTENT).classList.remove(constants.TRACK_META_CLASS);
 }
 
 function addWebConnectorDependencies() {
     AUDIO_PLAYER.classList.add(constants.VJS_PLAY_CONTROL_CLASS);
     AUDIO_PLAYER.classList.add(constants.VJS_PLAYING_CLASS);
-    document.getElementById(constants.NOW_PLAYING_DIV_ID).classList.add(constants.TRACK_META_CLASS);
+    document.getElementById(constants.MODAL_CONTENT).classList.add(constants.TRACK_META_CLASS);
 }
