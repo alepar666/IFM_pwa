@@ -88,9 +88,10 @@ div {
     background: black;
     color: red;
     border-radius: 12px;
-    height: 5vh;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     font-size: var(--fs-sm);
+    border: red solid 1px;
+    width: 90%;
 }
 
 .ifmxScrollText {
@@ -297,4 +298,119 @@ button,
 .channel,
 .close {
     touch-action: manipulation;
+}
+
+/* =========================
+   DESKTOP VERSION
+   ========================= */
+@media (min-width: 768px) {
+
+    html, body {
+        overflow: auto;
+        font-size: 1rem;
+    }
+
+    /* MAIN WRAPPER */
+    .container {
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 0.5rem 1rem 1rem;
+        max-height: none;
+    }
+
+    /* HEADER */
+    .header {
+        min-height: auto;
+        height: 100px;
+    }
+
+    #headerImage {
+        height: 100px;
+    }
+
+    /* SCROLL TEXT */
+    .scrollTextContainer {
+        height: 26px;
+        margin: 0.5rem auto;
+        font-size: 1rem;
+        border: red solid 1px;
+        width: 50%;
+        vertical-align: middle;
+    }
+
+    .channels {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .channel {
+        min-width: 220px;
+        max-width: 320px;
+        justify-content: flex-start;
+    }
+
+    .channelIcon {
+        height: 1.6em;
+    }
+
+    .channelName {
+        font-size: 0.75rem;
+    }
+
+    /* MESSAGE */
+    #messageBox {
+        font-size: 0.75rem;
+        margin: 0.3rem 0.8rem;
+        max-height: none;
+    }
+
+    /* LINKS (bottom section) */
+    .links {
+        margin: 1rem auto;
+        max-width: 600px;
+        max-height: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;   /* center horizontally */
+        gap: 0.4rem;
+    }
+    .links button {
+        font-size: 0.6rem !important;
+        padding: 0.2rem 0.4rem; /* optional: reduce size */
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 9999;
+        top: 20%;
+        height: 50%;
+    }
+
+    .modalContent {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    #nowPlayingCover {
+        max-width: 260px;
+        width: 90%;
+        max-height: 180px;
+        border-radius: 12px;
+    }
+
+    #nowPlayingExt {
+        font-size: 0.9rem;
+    }
 }
