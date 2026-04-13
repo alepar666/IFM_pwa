@@ -89,6 +89,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
 // Stop audio playback and reset the player
 export function stop() {
+    removeWebConnectorDependencies();
     if (AUDIO_PLAYER) {
         AUDIO_PLAYER.pause();
         AUDIO_PLAYER.src = '';
@@ -185,6 +186,7 @@ async function getNowPlaying() {
                 if (!trackMetadata.image_file) {
                     trackMetadata.image_file = constants.DEFAULT_IMAGE_NOT_FOUND;
                 }
+                addWebConnectorDependencies();
             }
         }
     } catch (error) {
@@ -365,4 +367,19 @@ export function reset() {
     channelButtons.forEach(btn => {
         btn.classList.remove(constants.IS_DISABLED_CSS_CLASS);
     });
+}
+
+/* following two functions adds/remove fake classes to the player to keep the web scrobble connector compatibility
+https://github.com/web-scrobbler/web-scrobbler/blob/master/src/connectors/intergalacticfm.ts#L8
+*/
+function removeWebConnectorDependencies() {
+    AUDIO_PLAYER.classList.remove(constants.VJS_PLAY_CONTROL_CLASS);
+    AUDIO_PLAYER.classList.remove(constants.VJS_PLAYING_CLASS);
+    document.getElementById(constants.NOW_PLAYING_DIV_ID).classList.remove(constants.TRACK_META_CLASS);
+}
+
+function addWebConnectorDependencies() {
+    AUDIO_PLAYER.classList.add(constants.VJS_PLAY_CONTROL_CLASS);
+    AUDIO_PLAYER.classList.add(constants.VJS_PLAYING_CLASS);
+    document.getElementById(constants.NOW_PLAYING_DIV_ID).classList.add(constants.TRACK_META_CLASS);
 }

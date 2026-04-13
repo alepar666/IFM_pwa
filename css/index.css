@@ -413,4 +413,8 @@ button,
     #nowPlayingExt {
         font-size: 0.9rem;
     }
+
+    .close {
+        left:20%;
+    }
 }

@@ -41,3 +41,7 @@ export const CLOSE = 'close';
 export const NOW_PLAYING_DIV_ID = 'nowPlaying';
 export const NOW_PLAYING_DIV_EXT_ID = 'nowPlayingExt';
 export const NOW_PLAYING_COVER_DIV_ID = 'nowPlayingCover';
+export const VJS_PLAY_CONTROL_CLASS = 'vjs-play-control';
+export const VJS_PLAYING_CLASS = 'vjs-playing';
+export const TRACK_META_DIV_ID = 'track-meta';
+export const TRACK_META_CLASS = 'track-meta';
