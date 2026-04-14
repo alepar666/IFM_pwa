@@ -111,6 +111,7 @@ div {
     flex-direction: column;
     min-width: 180px;
     z-index: 1000;
+    font-size: var(--fs-sm);
 }
 
 .dropdown a {
@@ -133,7 +134,7 @@ div {
     box-sizing: border-box;
     position: relative;
     overflow: hidden;
-    margin: 2vw auto;
+    margin: 3vw auto;
     background: black;
     color: red;
     border-radius: 12px;
@@ -279,13 +280,6 @@ div {
     text-align: center;
 }
 
-.links {
-    box-sizing: border-box;
-    margin: 10vw;
-    max-height: 15vh;
-    font-size: clamp(0.5rem, 0.5rem + 0.5vw, 1.5rem);
-}
-
 h5{
    margin: 0;
 }
@@ -309,6 +303,14 @@ h5{
     margin: 1em;
     text-align: center;
     max-height: 60%;
+}
+
+.cover-img {
+    width: 90%;
+    max-height: 50vh;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto;
 }
 
 /* Loader per la cover */
