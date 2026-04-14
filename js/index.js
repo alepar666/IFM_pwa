@@ -141,16 +141,19 @@ function refreshScrollingTextAnimation() {
 export function showHomeUI() {
     hideElement(document.getElementsByClassName(constants.CLOSE)[0]);
     hideElement(document.getElementById(constants.TRACK_INFO_MODAL_ID));
-    showElement(document.getElementById(constants.CONTAINER_ID));
+    showElement(document.getElementsByClassName(constants.LINKS_ID)[0]);
+    showElement(document.getElementById(constants.DISPLAY_MESSAGE_BOX_ID));
 }
 
 export function showNowPlayingUI() {
     const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
-    const homeContainer = document.getElementById(constants.CONTAINER_ID);
+    const linksContainer = document.getElementsByClassName(constants.LINKS_ID)[0];
     const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
-    if (homeContainer) hideElement(homeContainer);
+    const messageBox = document.getElementById(constants.DISPLAY_MESSAGE_BOX_ID);
+    if (linksContainer) hideElement(linksContainer);
     if (modal) showElement(modal);
     if (stopButton) showElement(stopButton);
+    if(messageBox) hideElement(messageBox);
 }
 
 // Display a message in the designated message box

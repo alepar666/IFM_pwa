@@ -107,11 +107,19 @@ function setDisabledButtonsState(disabled) {
     channelButtons.forEach(btn => btn.disabled = disabled);
 }
 
+// set the playing channel button in red
+function setActiveButtonState(channelNumber){
+    channelButtons.forEach(btn => btn.classList.remove('active'));
+    if(channelNumber > -1){
+        channelButtons[channelNumber].classList.add('active');
+    }
+}
 
 // Play a specific channel by index
 export async function playChannel(channelNumber) {
 
     setDisabledButtonsState(true);
+    setActiveButtonState(channelNumber);
 
     // Show/hide relevant UI elements for now-playing info
     showNowPlayingUI();
@@ -347,7 +355,7 @@ function showCoverLoading() {
 
 // Helper to generate cover image HTML
 function getCoverHTMLfromUrl(image_url) {
-    return '<img src="' + image_url + '" style="width:90%" onerror="this.src=\'' + constants.DEFAULT_IMAGE_NOT_FOUND + '\'; this.onerror=null;">';
+    return '<img src="' + image_url + '" style="width:70%" onerror="this.src=\'' + constants.DEFAULT_IMAGE_NOT_FOUND + '\'; this.onerror=null;">';
 }
 
 // Reset player, UI, and timers
@@ -368,6 +376,7 @@ export function reset() {
     channelButtons.forEach(btn => {
         btn.classList.remove(constants.IS_DISABLED_CSS_CLASS);
     });
+    setActiveButtonState(-1);
 }
 
 /* following two functions adds/remove fake classes to the player to keep the web scrobble connector compatibility

@@ -35,6 +35,7 @@ export const NOW_PLAYING_REQUEST_PREFIX = 'https://www.intergalactic.fm/now-play
 export const ARTIST_TITLE_SPLIT_STRING = ' - ';
 export const METADATA_SPLIT_CHAR = '|';
 export const CONTAINER_ID = 'container';
+export const LINKS_ID = 'links'
 export const TRACK_INFO_MODAL_ID = 'trackInfoModal';
 export const DEFAULT_IMAGE_NOT_FOUND = 'https://www.intergalactic.fm/sites/default/files/covers/blanco.png';
 export const CLOSE = 'close';
