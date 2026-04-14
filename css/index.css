@@ -307,7 +307,7 @@ h5{
 
 .cover-img {
     width: 90%;
-    max-height: 50vh;
+    max-height: 40vh;
     object-fit: contain;
     display: block;
     margin: 0 auto;
