@@ -302,15 +302,13 @@ h5{
     box-sizing: border-box;
     margin: 1em;
     text-align: center;
-    max-height: 60%;
 }
 
 .cover-img {
-    width: 80%;
-    max-height: 40dvh;
+    width: min(70%, 320px);
+    max-height: 50dvh;
+    height: auto;
     object-fit: contain;
-    display: block;
-    margin: 0 auto;
 }
 
 /* Loader per la cover */
