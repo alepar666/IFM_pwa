@@ -355,7 +355,7 @@ function showCoverLoading() {
 
 // Helper to generate cover image HTML
 function getCoverHTMLfromUrl(image_url) {
-    return '<img src="' + image_url + '" style="width:70%" onerror="this.src=\'' + constants.DEFAULT_IMAGE_NOT_FOUND + '\'; this.onerror=null;">';
+    return '<img src="' + image_url + '" style="width:60%" onerror="this.src=\'' + constants.DEFAULT_IMAGE_NOT_FOUND + '\'; this.onerror=null;">';
 }
 
 // Reset player, UI, and timers
