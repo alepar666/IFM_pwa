@@ -84,19 +84,13 @@ window.addEventListener('DOMContentLoaded', () => {
     refreshScrollingTextAnimation();
     // Enable all channel buttons
     channelButtons.forEach(btn => btn.disabled = false);
-    // Bind click events for external links
-    document.getElementById(constants.DONATE_LINK_ID).addEventListener(constants.CLICK_EVENT_NAME,
-        () => {
-            window.location.href = constants.DONATE_URL;
-        });
-    document.getElementById(constants.WEBSITE_LINK_ID).addEventListener(constants.CLICK_EVENT_NAME,
-        () => {
-            window.location.href = constants.WEBSITE_URL;
-        });
-    document.getElementById(constants.ARCHIVE_LINK_ID).addEventListener(constants.CLICK_EVENT_NAME,
-        () => {
-            window.location.href = constants.ARCHIVE_URL;
-        });
+    // menu setup
+    let menuBtn = document.getElementById('menuButton');
+    let menu = document.getElementById('dropdownMenu');
+    menuBtn.addEventListener('click', (e) => {
+        menu.classList.toggle('hidden');
+        menuBtn.classList.toggle('open');
+    });
 });
 
 // Fetch the current app version from version.json
@@ -141,16 +135,13 @@ function refreshScrollingTextAnimation() {
 export function showHomeUI() {
     hideElement(document.getElementsByClassName(constants.CLOSE)[0]);
     hideElement(document.getElementById(constants.TRACK_INFO_MODAL_ID));
-    showElement(document.getElementsByClassName(constants.LINKS_ID)[0]);
     showElement(document.getElementById(constants.DISPLAY_MESSAGE_BOX_ID));
 }
 
 export function showNowPlayingUI() {
     const modal = document.getElementById(constants.TRACK_INFO_MODAL_ID);
-    const linksContainer = document.getElementsByClassName(constants.LINKS_ID)[0];
     const stopButton = document.getElementsByClassName(constants.CLOSE)[0];
     const messageBox = document.getElementById(constants.DISPLAY_MESSAGE_BOX_ID);
-    if (linksContainer) hideElement(linksContainer);
     if (modal) showElement(modal);
     if (stopButton) showElement(stopButton);
     if(messageBox) hideElement(messageBox);

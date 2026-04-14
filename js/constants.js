@@ -1,8 +1,5 @@
 // Constants for PWA version of Intergalactic FM
 export const DISPLAY_MESSAGE_BOX_ID = 'messageBox';
-export const DONATE_URL = 'https://www.paypal.com/donate/?hosted_button_id=MV4HVU2D4W3LJ';
-export const WEBSITE_URL = 'https://intergalactic.fm/';
-export const ARCHIVE_URL = 'https://videohotmix.net/';
 export const DONATE_LINK_ID = 'donateRedirect';
 export const WEBSITE_LINK_ID = 'websiteRedirect';
 export const ARCHIVE_LINK_ID = 'archiveRedirect';

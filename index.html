@@ -6,22 +6,34 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 
-    <link rel="stylesheet" href="css/index.css?v=1776163768108">
-    <link rel="icon" type="image/x-icon" href="img/favicon.ico?v=1776163768108">
-    <link rel="manifest" href="manifest.json?v=1776163768108">
+    <link rel="stylesheet" href="css/index.css?v=1776171919408">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico?v=1776171919408">
+    <link rel="manifest" href="manifest.json?v=1776171919408">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Intergalactic FM">
-    <link rel="apple-touch-icon" href="img/logo.png?v=1776163768108">
+    <link rel="apple-touch-icon" href="img/logo.png?v=1776171919408">
 </head>
 
 <body>
 <div class="header">
+    <!-- STOP BUTTON -->
     <button id="stopButton" class="close"><svg width="20" height="20" viewBox="0 0 24 24">
         <rect width="24" height="24" fill="red"/>
     </svg></button>
+    <!-- LOGO -->
     <img id="headerImage" src="img/logo.svg" alt="IFM logo">
+    <!-- MENU BUTTON -->
+    <button id="menuButton" class="menu-btn">≡</button>
+    <!-- DROPDOWN MENU -->
+    <div id="dropdownMenu" class="dropdown hidden">
+        <a href="https://intergalactic.fm/">WEBSITE</a>
+        <a href="https://www.paypal.com/donate/?hosted_button_id=MV4HVU2D4W3LJ">DONATE</a>
+        <a href="https://videohotmix.net/">ARCHIVE</a>
+        <a href="https://www.instagram.com/intergalacticfm">INSTAGRAM</a>
+        <a href="https://www.youtube.com/channel/UCyiBzmL0FAJlupsJJg5BNzQ">YOUTUBE</a>
+    </div>
 </div>
 
 <div class="scrollTextContainer">
@@ -49,14 +61,7 @@
             </div>
         </button>
     </div>
-
     <div id="messageBox"></div>
-
-    <div class="links">
-        <button id="websiteRedirect" class="channel">@ WEBSITE</button>
-        <button id="donateRedirect" class="channel">$ DONATE</button>
-        <button id="archiveRedirect" class="channel">[-] ARCHIVE</button>
-    </div>
 </div>
 
 <div id="trackInfoModal" class="modal">
@@ -69,8 +74,6 @@
 
 <audio hidden id="player" src="" type="audio/mpeg" preload="auto" playsinline></audio>
 
-<script type="module" src="js/constants.js?v=1776163768108"></script>
-<script type="module" src="js/audio.js?v=1776163768108"></script>
-<script type="module" src="js/index.js?v=1776163768108"></script>
+<script type="module" src="js/audio.js?v=1776171919408"></script>
 </body>
 </html>
