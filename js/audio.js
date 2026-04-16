@@ -8,7 +8,6 @@ import {
     updateScrollingText
 } from './index.js';
 import {STATIONS} from "./stations.js";
-import {MODAL_CONTENT} from "./constants.js";
 
 // Current URL for fetching now-playing info
 let currentNowPlayingUrl;

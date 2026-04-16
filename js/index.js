@@ -91,6 +91,23 @@ window.addEventListener('DOMContentLoaded', () => {
         menu.classList.toggle('hidden');
         menuBtn.classList.toggle('open');
     });
+    /* generic click out of menu closes drowpdown */
+    document.addEventListener('click', (e) => {
+        const isClickInsideMenu = menu.contains(e.target);
+        const isClickOnButton = menuBtn.contains(e.target);
+        if (!isClickInsideMenu && !isClickOnButton) {
+            menu.classList.add('hidden');
+            menuBtn.classList.remove('open');
+        }
+    });
+
+    /* desktop ESC close menu */
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            menu.classList.toggle('hidden');
+            menuBtn.classList.toggle('open');
+        }
+    });
 });
 
 // Fetch the current app version from version.json
