@@ -1,4 +1,4 @@
-const CACHE_NAME = `ifm-cache-1776329893320`;
+const CACHE_NAME = `ifm-cache-1776330177280`;
 const BASE_PATH = self.location.pathname.replace(/\/[^\/]*$/, '/');
 
 const PRECACHE_ASSETS = [
