@@ -139,6 +139,7 @@ export async function playChannel(channelNumber) {
 
         clearTimeout(nowPlayingRequestTimer);
         previousTrackHash = constants.EMPTY_VAL;
+        previousArtworkUrl = constants.EMPTY_VAL;
 
         displayMessage(constants.LOADING_MSG + station.title + "...");
 
