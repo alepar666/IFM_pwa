@@ -209,22 +209,59 @@ async function getNowPlaying() {
     // Update track metadata if it changed
     const metaDataHash = trackMetadata.title + trackMetadata.image_file;
     const currentArtworkUrl = trackMetadata.image_file;
-    if (previousTrackHash !== metaDataHash) {
+    const trackChanged = previousTrackHash !== metaDataHash;
+    const artworkChanged = previousArtworkUrl !== currentArtworkUrl;
+
+    if (trackChanged) {
         setTrackMetadata(trackMetadata);
         previousTrackHash = metaDataHash;
         feedNowPlaying(trackMetadata);
         pollingInterval = fastPollingInterval;
-        if (previousArtworkUrl === currentArtworkUrl) {
-            // outdated artwork
+        if (!artworkChanged) {
             showCoverLoading();
-        } else {
-            // new artwork
-            previousArtworkUrl = currentArtworkUrl;
         }
     }
-
+    if (artworkChanged) {
+        previousArtworkUrl = currentArtworkUrl;
+        updateCover(currentArtworkUrl);
+    }
     if (!currentNowPlayingUrl) return;
     nowPlayingRequestTimer = setTimeout(getNowPlaying, pollingInterval);
+}
+
+const coverState = {
+    currentUrl: null,
+    status: 'idle',
+};
+
+const failedImages = new Set();
+
+function updateCover(url) {
+    if (coverState.currentUrl === url && coverState.status === 'success') {
+        return;
+    }
+    if (failedImages.has(url)) {
+        coverState.status = 'error';
+        showCover(constants.DEFAULT_IMAGE_NOT_FOUND);
+        return;
+    }
+    coverState.currentUrl = url;
+    coverState.status = 'loading';
+    showCoverLoading();
+    const img = new Image();
+    img.onload = () => {
+        if (coverState.currentUrl !== url) return;
+        coverState.status = 'success';
+        showCover(url);
+    };
+
+    img.onerror = () => {
+        if (coverState.currentUrl !== url) return;
+        coverState.status = 'error';
+        failedImages.add(url);
+        showCover(constants.DEFAULT_IMAGE_NOT_FOUND);
+    };
+    img.src = url;
 }
 
 // Fetch wrapper with timeout using AbortController
@@ -341,8 +378,6 @@ export function feedNowPlaying(nowPlayingMetadata) {
 
     feedHTML(constants.NOW_PLAYING_DIV_ID, main);
     feedHTML(constants.NOW_PLAYING_DIV_EXT_ID, otherInfo);
-    feedHTML(constants.NOW_PLAYING_COVER_DIV_ID, getCoverHTMLfromUrl(meta.image_file || constants.DEFAULT_IMAGE_NOT_FOUND));
-
     showNowPlayingUI();
 }
 
@@ -351,6 +386,10 @@ function showCoverLoading() {
         constants.NOW_PLAYING_COVER_DIV_ID,
         '<div class="cover-loading"></div>'
     );
+}
+
+function showCover(url){
+    feedHTML(constants.NOW_PLAYING_COVER_DIV_ID, getCoverHTMLfromUrl(url || constants.DEFAULT_IMAGE_NOT_FOUND));
 }
 
 // Helper to generate cover image HTML
