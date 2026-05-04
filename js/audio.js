@@ -119,6 +119,8 @@ export async function playChannel(channelNumber) {
 
     setDisabledButtonsState(true);
     setActiveButtonState(channelNumber);
+    previousTrackHash = constants.EMPTY_VAL;
+    previousArtworkUrl = constants.EMPTY_VAL;
 
     // Show/hide relevant UI elements for now-playing info
     showNowPlayingUI();
