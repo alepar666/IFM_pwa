@@ -425,6 +425,26 @@ export function reset() {
     });
     setActiveButtonState(-1);
 }
+/* fixes a bug that prevents audio to stop when opening audio files from links outside main view */
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+        stopAllAudio();
+        clearTimeout(nowPlayingRequestTimer);
+        clearTimeout(pollingSwitchTimer);
+    }
+});
+window.addEventListener('pagehide', () => {
+    stopAllAudio();
+});
+window.addEventListener('beforeunload', () => {
+    stopAllAudio();
+});
+function stopAllAudio() {
+    if (!AUDIO_PLAYER) return;
+    AUDIO_PLAYER.pause();
+    AUDIO_PLAYER.src = '';
+    AUDIO_PLAYER.load();
+}
 
 /* following two functions adds/remove fake classes to the player to keep the web scrobble connector compatibility
 https://github.com/web-scrobbler/web-scrobbler/blob/master/src/connectors/intergalacticfm.ts#L8
