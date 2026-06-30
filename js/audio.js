@@ -426,19 +426,12 @@ export function reset() {
     setActiveButtonState(-1);
 }
 /* fixes a bug that prevents audio to stop when opening audio files from links outside main view */
-document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
+document.querySelectorAll('a[target="_blank"]').forEach(link => {
+    link.addEventListener('click', () => {
         stopAllAudio();
-        clearTimeout(nowPlayingRequestTimer);
-        clearTimeout(pollingSwitchTimer);
-    }
+    });
 });
-window.addEventListener('pagehide', () => {
-    stopAllAudio();
-});
-window.addEventListener('beforeunload', () => {
-    stopAllAudio();
-});
+
 function stopAllAudio() {
     if (!AUDIO_PLAYER) return;
     AUDIO_PLAYER.pause();
