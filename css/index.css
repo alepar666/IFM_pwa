@@ -396,5 +396,6 @@ button,
     .dropdown{
         right:20%;
         font-size: 0.6rem !important;
+        z-index: 10000;
     }
 }
